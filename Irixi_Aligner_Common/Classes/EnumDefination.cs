@@ -9,9 +9,15 @@
     public enum SystemState
     {
         IDLE,
-        BUSY
+        BUSY,
+        PAUSE
     }
-
+    public enum ScriptState
+    {
+        IDLE,
+        BUSY,
+        PAUSE
+    }
     public enum MotionControllerType
     {
         LUMINOS_P6A,

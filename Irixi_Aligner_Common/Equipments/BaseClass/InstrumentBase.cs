@@ -143,10 +143,7 @@ namespace Irixi_Aligner_Common.Equipments.Base
                 });
 
                 // if error, throw it
-                task_fetch_loop.ContinueWith(t =>
-                {
-                   throw t.Exception;
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                task_fetch_loop.ContinueWith(t =>throw t.Exception,TaskContinuationOptions.OnlyOnFaulted);
             }
         }
 
@@ -156,24 +153,21 @@ namespace Irixi_Aligner_Common.Equipments.Base
             {
                 // cancel the task of fetching loop
                 cts_fetching.Cancel();
-
                 TimeSpan ts = TimeSpan.FromMilliseconds(2000);
                 if (!task_fetch_loop.Wait(ts))
                     throw new TimeoutException("unable to stop the fetching loop task");
-
             }
-        }
-        
+        }        
         public virtual void ResumeAutoFetching()
         {
             if (task_fetch_loop != null)
                 StartAutoFetching();
         }
-
         public virtual void StopAutoFetching()
         {
             if (task_fetch_loop != null)
             {
+                
                 if (task_fetch_loop.IsCompleted == false)
                 {
                     PauseAutoFetching();
