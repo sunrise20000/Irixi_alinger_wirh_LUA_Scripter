@@ -21,6 +21,7 @@ using Irixi_Aligner_Common.Equipments.Instruments;
 using Irixi_Aligner_Common.UserControls;
 using Irixi_Aligner_Common.ViewModel;
 
+
 namespace Irixi_Aligner_Common
 {
     public partial class MainWindow : DXRibbonWindow
@@ -33,7 +34,7 @@ namespace Irixi_Aligner_Common
 
         // signal indicates that the splash screen has opened successfully
         ManualResetEvent ResetSplashCreated;
-
+        WindowScript ScriptWindow = new WindowScript();
         public MainWindow()
         {          
             #region Show Splash Screen
@@ -402,6 +403,12 @@ namespace Irixi_Aligner_Common
         {
             panelPositionPreset.Visibility = Visibility.Visible;
             dockLayoutManager.MDIController.Activate(panelPositionPreset);
+        }
+
+        private void BarCheckItem_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ScriptWindow.Show();
+            
         }
     }
 

@@ -1106,7 +1106,7 @@ namespace Irixi_Aligner_Common.Classes
                             _axis_homing.Add(axis);
 
                             // update UI immediately
-                            await Task.Delay(10);
+                            await Task.Delay(100);
 
                         }
                     }
