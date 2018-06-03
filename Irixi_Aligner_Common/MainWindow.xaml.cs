@@ -338,6 +338,11 @@ namespace Irixi_Aligner_Common
             service.Dispose();
             #endregion
 
+            #region Close ScriptWindow
+            ScriptWindow.SetCloseFlag(true);
+            ScriptWindow.Close();
+            #endregion
+
         }
 
         /// <summary>
@@ -405,10 +410,9 @@ namespace Irixi_Aligner_Common
             dockLayoutManager.MDIController.Activate(panelPositionPreset);
         }
 
-        private void BarCheckItem_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            ScriptWindow.Show();
-            
+        private void btn_Script_ItemClick(object sender, ItemClickEventArgs e)
+        {  
+                ScriptWindow.Show();
         }
     }
 
