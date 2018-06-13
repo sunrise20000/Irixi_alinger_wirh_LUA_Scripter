@@ -86,7 +86,7 @@ namespace Irixi_Aligner_Common.Equipments.Instruments
         #endregion
 
         #region Variables
-
+        private int ActiveChannel = 0;
         #endregion
 
         #region Constructor
@@ -179,7 +179,7 @@ namespace Irixi_Aligner_Common.Equipments.Instruments
             for (int i = 0; i < MAX_CH; i++)
             {
                 if (int.TryParse(ret[i], out int stat))
-                    MetaProperties[i].Status = (EnumStatusFlag)stat;
+                    MetaProperty[i].Status = (EnumStatusFlag)stat;
                 else
                     throw new FormatException("the STATUS part of the response of the RWS request is error");
             }
@@ -188,12 +188,12 @@ namespace Irixi_Aligner_Common.Equipments.Instruments
             for (int i = 0; i < MAX_CH; i++)
             {
                 if (double.TryParse(ret[i + 2], out double pwr))
-                    MetaProperties[i].MeasurementValue = pwr;
+                    MetaProperty[i].MeasurementValue = pwr;
                 else
                     throw new FormatException("the POWER part of the response of the RWS request is error");
             }
             
-            return MetaProperties[ActiveChannel].MeasurementValue;
+            return MetaProperty[ActiveChannel].MeasurementValue;
 #else
             var val = new Random((int)DateTime.Now.Ticks).NextDouble() * 10;
             for (int i = 0; i < MAX_CH; i++)

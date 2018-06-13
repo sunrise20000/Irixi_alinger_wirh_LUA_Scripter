@@ -12,13 +12,21 @@ namespace Irixi_Aligner_Common.Classes
     public class LuaWrapper
     {
         private ScriptHelpMgr Scriptmgr = null;
-        public NLua.Lua lua=new NLua.Lua();
+        public NLua.Lua lua=null;
         public LuaWrapper()
         {
-            lua.SetDebugHook(NLua.Event.EventMasks.LUA_MASKLINE, 1);
-            lua.LoadCLRPackage();
-            Scriptmgr = ScriptHelpMgr.Instance;
-            RegistAllFunction();
+            try
+            {
+                lua = new NLua.Lua();
+                lua.SetDebugHook(NLua.Event.EventMasks.LUA_MASKLINE, 1);
+                lua.LoadCLRPackage();
+                Scriptmgr = ScriptHelpMgr.Instance;
+                RegistAllFunction();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Lua解释器创建失败: "+ex.Message);
+            }
         }
         ~LuaWrapper()
         {

@@ -46,7 +46,7 @@
                             RibbonStyle="Large"
                             LargeGlyph="{StaticResource IconHome_32x32}" 
                             Command="{Binding Service.CommandHomeAllAxes}" />
-                            <!--IsEnabled="{Binding Service.State, Converter={StaticResource SystemStatusToStartButtonEnable}, Mode=OneWay}"--> 
+                        <!--IsEnabled="{Binding Service.State, Converter={StaticResource SystemStatusToStartButtonEnable}, Mode=OneWay}"-->
                         <dxb:BarButtonItem 
                             x:Name="btnStart" 
                             Content="Start" 
@@ -104,7 +104,7 @@
                             Glyph="{StaticResource IconRotating_512x512}" 
                             ItemClick="btnRotatingScan_ItemClick" />
                     </dxr:RibbonPageGroup>
-                  
+
                 </dxr:RibbonPage>
                 <dxr:RibbonPage x:Name="rpgView" Caption="View">
                     <dxr:RibbonPageGroup x:Name="rpgView_MotionComponent" Caption="Motion Control">
@@ -119,7 +119,7 @@
                             LargeGlyph="{dx:DXImageOffice2013 Image=Solution_32x32.png}" 
                             RibbonStyle="Default" 
                             IsChecked="{Binding Visibility, ElementName=CylinderControlPanel, Mode=TwoWay, Converter={StaticResource VisibilityToBoolean}}" />
-                       
+
                     </dxr:RibbonPageGroup>
                     <dxr:RibbonPageGroup Caption="Script">
                         <dxb:BarButtonItem           
@@ -130,8 +130,8 @@
                             Glyph="{StaticResource IconScript_64x64}"
                             ItemClick="btn_Script_ItemClick"
                             />
-                            <!--IsChecked="{Binding Visibility, ElementName=ScriptControlPanel, Mode=TwoWay, Converter={StaticResource VisibilityToBoolean}}"-->
-                            
+                        <!--IsChecked="{Binding Visibility, ElementName=ScriptControlPanel, Mode=TwoWay, Converter={StaticResource VisibilityToBoolean}}"-->
+
                     </dxr:RibbonPageGroup>
                     <dxr:RibbonPageGroup Caption="Vision">
                         <dxb:BarCheckItem
@@ -143,7 +143,7 @@
                         />
                     </dxr:RibbonPageGroup>
                 </dxr:RibbonPage>
-         
+
             </dxr:RibbonDefaultPageCategory>
         </dxr:RibbonControl>
         <dxr:RibbonStatusBarControl DockPanel.Dock="Bottom">
@@ -172,7 +172,7 @@
                     <dxd:DocumentGroup 
                         x:Name="MotionComponentPanelHost" 
                         MDIStyle="MDI">
-                        
+
                         <!-- The control panel of Cylinder -->
                         <dxd:DocumentPanel 
                             x:Name="CylinderControlPanel" 
@@ -187,39 +187,39 @@
                             AllowDockToDocumentGroup="False">
                             <Grid IsEnabled="{Binding Service.ScriptState, Converter={StaticResource ScriptStateToGridEnable}}">
                                 <Grid IsEnabled="{Binding Service.CylinderController.IsInitialized}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="30" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <CheckBox 
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox 
                                     IsChecked="{Binding Service.CylinderController.FiberClampState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}"
                                     Style="{DynamicResource CheckBoxStyle1}" />
-                                <CheckBox 
+                                    <CheckBox 
                                     Grid.Row="1" 
                                     IsChecked="{Binding Service.CylinderController.LensVacuumState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}" 
                                     Style="{DynamicResource CheckBoxStyle1}" />
-                                <CheckBox 
+                                    <CheckBox 
                                     Grid.Row="2" 
                                     IsChecked="{Binding Service.CylinderController.PlcVacuumState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}"
                                     Style="{DynamicResource CheckBoxStyle1}" />
-                                <CheckBox 
+                                    <CheckBox 
                                     Grid.Row="3" 
                                     IsChecked="{Binding Service.CylinderController.PodVacuumState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}"
                                     Style="{DynamicResource CheckBoxStyle1}" />
-                                <ToggleButton 
+                                    <ToggleButton 
                                     Grid.Column="1"
                                     Height="30" 
                                     Margin="0,2" 
                                     Content="Fiber Clamp" 
                                     Command="{Binding Service.CommandToggleFiberClampState, Mode=OneWay}" 
                                     IsChecked="{Binding Service.CylinderController.FiberClampState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}" />
-                                <ToggleButton 
+                                    <ToggleButton 
                                     Grid.Row="1" 
                                     Grid.Column="1"
                                     Height="30" 
@@ -227,7 +227,7 @@
                                     Content="Lens Vacuum" 
                                     Command="{Binding Service.CommandToggleLensVacuumState, Mode=OneWay}" 
                                     IsChecked="{Binding Service.CylinderController.LensVacuumState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}" />
-                                <ToggleButton 
+                                    <ToggleButton 
                                     Grid.Row="2" 
                                     Grid.Column="1"
                                     Height="30" 
@@ -235,7 +235,7 @@
                                     Content="PLC Vacuum" 
                                     Command="{Binding Service.CommandTogglePlcVacuumState, Mode=OneWay}" 
                                     IsChecked="{Binding Service.CylinderController.PlcVacuumState, Converter={StaticResource OutputStateToBoolean}, Mode=OneWay}" />
-                                <ToggleButton 
+                                    <ToggleButton 
                                     Grid.Row="3" 
                                     Grid.Column="1"
                                     Height="30" 
@@ -246,7 +246,7 @@
                                 </Grid>
                             </Grid>
                         </dxd:DocumentPanel>
-                        
+
                         <!--The control panel of script-->
                         <!--<dxd:DocumentPanel x:Name="ScriptControlPanel"                        
                             MDISize="1000,600" 
@@ -265,7 +265,7 @@
                         </dxd:DocumentPanel>-->
 
                         <!--The control panel of vision-->
-                        <dxd:DocumentPanel x:Name="VisionControlPanel" 
+                        <!--<dxd:DocumentPanel x:Name="VisionControlPanel" 
                             Caption="VisionEditer" 
                             MDISize="1000,600" 
                             ShowMaximizeButton="False" 
@@ -279,7 +279,7 @@
                             <Grid>
                                 <UserControls:UC_VisionCtrl/>
                             </Grid>
-                        </dxd:DocumentPanel>
+                        </dxd:DocumentPanel>-->
                         <!-- AlignmentnD Panel -->
                         <dxd:DocumentPanel x:Name="panelAlignmentXD" 
                                            Caption="Alignment nD" 
@@ -293,14 +293,14 @@
                                            Visibility="Hidden">
 
                             <Grid IsEnabled="{Binding Service.ScriptState , Converter={StaticResource ScriptStateToGridEnable}}">
-                                    <apanel:AlignmentPanel 
+                                <apanel:AlignmentPanel 
                                 DataContext="{Binding Service.AlignmentXDArgs}" 
                                 PropertiesTemplate="UserControls/AlignmentFunc/AlignmentND/Template.xaml" 
                                 StartCommand="{Binding Service.CommandDoAlignmentXD}"
                                 StopCommand="{Binding Service.CommandStop}"/>
                             </Grid>
                         </dxd:DocumentPanel>
-                        
+
                         <!-- Blind Search Panel -->
                         <dxd:DocumentPanel x:Name="panelBlindSearch" 
                                            Caption="Blind Search" 
@@ -373,11 +373,15 @@
                                            AllowDockToDocumentGroup="False"
                                            Visibility="Hidden">
                             <Grid IsEnabled="{Binding Service.ScriptState , Converter={StaticResource ScriptStateToGridEnable}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="277*"/>
+                                    <ColumnDefinition Width="707*"/>
+                                </Grid.ColumnDefinitions>
                                 <apanel:AlignmentPanel 
                                 DataContext="{Binding Service.CentralAlignArgs}" 
                                 PropertiesTemplate="UserControls/AlignmentFunc/CentralAlign/Template.xaml" 
                                 StartCommand="{Binding Service.CommandDoCentralAlign}"
-                                StopCommand="{Binding Service.CommandStop}"/>
+                                StopCommand="{Binding Service.CommandStop}" Grid.ColumnSpan="2"/>
                             </Grid>
                         </dxd:DocumentPanel>
 
@@ -513,7 +517,7 @@
                                 </StackPanel>
                             </Grid>
                         </dxd:DocumentPanel>
-                        
+
                     </dxd:DocumentGroup>
                 </dxd:LayoutGroup>
                 <dxd:TabbedGroup x:Name="bottomInfoPanelsHost">

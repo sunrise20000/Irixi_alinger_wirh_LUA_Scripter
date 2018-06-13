@@ -101,37 +101,46 @@ namespace Irixi_Aligner_Common.UserControls
         #endregion
         public UC_ScriptEditer()
         {
-            InitializeComponent();
-            SetScintillaToCurrentOptions(TextArea);
-            StrFilePath = "";
-            lua.lua.DebugHook += Lua_DebugHook;
-            Messenger.Default.Register<string>(this,"ScriptStart",m => {
+            try
+            {
+                InitializeComponent();
+                SetScintillaToCurrentOptions(TextArea);
+                StrFilePath = "";
+                lua.lua.DebugHook += Lua_DebugHook;
+                Messenger.Default.Register<string>(this, "ScriptStart", m =>
                 {
-                    SystemService service = SimpleIoc.Default.GetInstance<SystemService>();
-                    if (service.ScriptState == ScriptState.PAUSE)
-                        service.Resume();
-                    else
                     {
-                        if (ScriptThread == null || ScriptThread.ThreadState != ThreadState.Running)
+                        SystemService service = SimpleIoc.Default.GetInstance<SystemService>();
+                        if (service.ScriptState == ScriptState.PAUSE)
+                            service.Resume();
+                        else
                         {
-                            ScriptThread = new Thread(new ThreadStart(StartScript));
-                            ScriptThread.Start();
+                            if (ScriptThread == null || ScriptThread.ThreadState != ThreadState.Running)
+                            {
+                                ScriptThread = new Thread(new ThreadStart(StartScript));
+                                ScriptThread.Start();
+                            }
                         }
-                    } 
-                }
-            });
-            Messenger.Default.Register<string>(this, "ScriptStop", m => {
-                {
-                    SystemService systemService = SimpleIoc.Default.GetInstance<SystemService>();
-                    if (ScriptThread != null)
-                    {
-                        ScriptThread.Abort();
-                        if (!ScriptThread.IsAlive)
-                            systemService.LastMessage = new Message.MessageItem(Message.MessageType.Error, "The script is stoped");
                     }
-                    systemService.StopAll();
-                }
-            });
+                });
+                Messenger.Default.Register<string>(this, "ScriptStop", m =>
+                {
+                    {
+                        SystemService systemService = SimpleIoc.Default.GetInstance<SystemService>();
+                        if (ScriptThread != null)
+                        {
+                            ScriptThread.Abort();
+                            if (!ScriptThread.IsAlive)
+                                systemService.LastMessage = new Message.MessageItem(Message.MessageType.Error, "The script is stoped");
+                        }
+                        systemService.StopAll();
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
         }
         ~UC_ScriptEditer()
         {
