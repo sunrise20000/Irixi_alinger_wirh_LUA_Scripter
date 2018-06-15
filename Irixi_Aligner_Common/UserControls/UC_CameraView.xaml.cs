@@ -12,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using HalconDotNet;
 
 namespace Irixi_Aligner_Common.UserControls
 {
     /// <summary>
-    /// UC_VisionCtrl.xaml 的交互逻辑
+    /// UC_CameraView.xaml 的交互逻辑
     /// </summary>
-    public partial class UC_VisionCtrl : UserControl
+    public partial class UC_CameraView : UserControl
     {
-        public UC_VisionCtrl()
+        public UC_CameraView()
         {
             InitializeComponent();
         }

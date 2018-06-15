@@ -4,6 +4,7 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Resources/IconsCollection.xaml" />
         <ResourceDictionary Source="Resources/ControlThemes.xaml" />
+        <ResourceDictionary Source="Resources/StyleDictionaryResource.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <Converters:BooleanToVisibility x:Key="BooleanToVisibility" />
       <Converters:SystemStatusToStopButtonEnable x:Key="SystemStatusToStopButtonEnable" />
@@ -23,8 +24,10 @@
       <Converters:SystemStatusToScriptStartButtonImage x:Key="SystemStatusToScriptStartButtonImage"/>
       <Converters:SystemStatusToScriptStopButtonImage x:Key="SystemStatusToScriptStopButtonImage"/>
       <Converters:SystemStatusToScriptCompileButtonImage x:Key="SystemStatusToScriptCompileButtonImage"/>
-       
-      <DataTemplate x:Key="MessageItemTemplate" DataType="{x:Type msg:MessageItem}" xmlns:msg="clr-namespace:Irixi_Aligner_Common.Message">
+      <Converters:Text2CameStateImage x:Key="Text2CameStateImage"/>
+      <Converters:RoiTemplate2Visibility x:Key="RoiTemplate2Visibility"/>
+            
+        <DataTemplate x:Key="MessageItemTemplate" DataType="{x:Type msg:MessageItem}" xmlns:msg="clr-namespace:Irixi_Aligner_Common.Message">
         <Border Padding="3">
           <Grid>
             <Grid.ColumnDefinitions>

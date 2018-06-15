@@ -265,7 +265,7 @@
                         </dxd:DocumentPanel>-->
 
                         <!--The control panel of vision-->
-                        <!--<dxd:DocumentPanel x:Name="VisionControlPanel" 
+                        <dxd:DocumentPanel x:Name="VisionControlPanel" 
                             Caption="VisionEditer" 
                             MDISize="1000,600" 
                             ShowMaximizeButton="False" 
@@ -277,9 +277,9 @@
                             AllowDockToDocumentGroup="False"
                             Visibility="Hidden">
                             <Grid>
-                                <UserControls:UC_VisionCtrl/>
+                                <UserControls:UC_CameraView/>
                             </Grid>
-                        </dxd:DocumentPanel>-->
+                        </dxd:DocumentPanel>
                         <!-- AlignmentnD Panel -->
                         <dxd:DocumentPanel x:Name="panelAlignmentXD" 
                                            Caption="Alignment nD" 

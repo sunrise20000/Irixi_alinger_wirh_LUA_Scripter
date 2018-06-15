@@ -261,15 +261,19 @@
     <Compile Include="Classes\BaseClass\MassMoveArgs.cs" />
     <Compile Include="Classes\BaseClass\ObservableCollectionThreadSafe.cs" />
     <Compile Include="Classes\BaseClass\Property.cs" />
+    <Compile Include="Classes\CameraItem.cs" />
+    <Compile Include="Classes\Converters\RoiTemplate2Visibility.cs" />
     <Compile Include="Classes\Converters\ScriptStateToGridEnable.cs" />
     <Compile Include="Classes\Converters\SystemStatusToCompileButtonEnable.cs" />
     <Compile Include="Classes\Converters\SystemStatusToScriptCompileButtonImage.cs" />
     <Compile Include="Classes\Converters\SystemStatusToScriptStopButtonImage.cs" />
     <Compile Include="Classes\Converters\SystemStatusToScriptStartButtonImage.cs" />
-    <Compile Include="Classes\Converters\TextToBoolean.cs" />
+    <Compile Include="Classes\Converters\Text2CameStateImage.cs" />
     <Compile Include="Classes\Converters\TextToImage.cs" />
     <Compile Include="Classes\LuaWrapper.cs" />
+    <Compile Include="Classes\RoiItem.cs" />
     <Compile Include="Classes\ScriptHelpMgr.cs" />
+    <Compile Include="Classes\TemplateItem.cs" />
     <Compile Include="Configuration\ScriptCfg\Func.cs" />
     <Compile Include="Configuration\ScriptCfg\FuncManager.cs" />
     <Compile Include="Configuration\ScriptCfg\VM_TreeView.cs" />
@@ -311,14 +315,20 @@
     <Compile Include="UserControls\PresetPositionPanel.xaml.cs">
       <DependentUpon>PresetPositionPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UC_CameraView.xaml.cs">
+      <DependentUpon>UC_CameraView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UC_MessageBox.xaml.cs">
       <DependentUpon>UC_MessageBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\UC_VisionCtrl.xaml.cs">
-      <DependentUpon>UC_VisionCtrl.xaml</DependentUpon>
+    <Compile Include="UserControls\UC_TemplateRoiSetting.xaml.cs">
+      <DependentUpon>UC_TemplateRoiSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\WindowScript.xaml.cs">
       <DependentUpon>WindowScript.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Window_TemplateRoiSetting.xaml.cs">
+      <DependentUpon>Window_TemplateRoiSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vision\LightSource\LightBase.cs" />
     <Compile Include="Vision\LightSource\Light_JK_PWD6024.cs" />
@@ -463,6 +473,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\StyleDictionaryResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Splash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -531,6 +545,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\UC_CameraView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\UC_MessageBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -539,11 +557,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\UC_VisionCtrl.xaml">
+    <Page Include="UserControls\UC_TemplateRoiSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\WindowScript.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Window_TemplateRoiSetting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -567,6 +589,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\Icons\Connected.png" />
+    <Resource Include="Resources\Images\Icons\Delete.png" />
+    <Resource Include="Resources\Images\Icons\Disconnected.png" />
+    <Resource Include="Resources\Images\Icons\Edit.png" />
+    <Resource Include="Resources\Images\Icons\GrabOnce.png" />
+    <Resource Include="Resources\Images\Icons\GrabRepeat.png" />
+    <Resource Include="Resources\Images\Icons\New.png" />
+    <Resource Include="Resources\Images\Icons\StopGrab.png" />
+    <Resource Include="Resources\Images\Icons\Setting64_64.png" />
     <Resource Include="Resources\Images\Icons\equipment_24x24.png" />
     <Resource Include="Resources\Images\Icons\system_24x24.png" />
     <Resource Include="Resources\Images\Icons\enum_24x24.png" />

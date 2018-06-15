@@ -34,6 +34,9 @@ using System.Threading;
 using System.Collections.Specialized;
 using System.Windows.Forms;
 using System.IO;
+using System.Collections.ObjectModel;
+using IrixiStepperControllerHelper.Classes;
+using Irixi_Aligner_Common.UserControls;
 
 namespace Irixi_Aligner_Common.Classes
 {
@@ -53,7 +56,12 @@ namespace Irixi_Aligner_Common.Classes
         readonly EquipmentCollection<LogicalMotionComponent> listLogicalAligner;
         readonly EquipmentCollection<InstrumentBase> listAvaliableInstrument;
         readonly EquipmentCollection<InstrumentBase> listDefinedInstrument;
-    
+
+        private ObservableCollection<CameraItem> _cameraCollection = new ObservableCollection<CameraItem>();
+        private ObservableCollection<RoiItem> _roiCollection = new ObservableCollection<RoiItem>();
+        private ObservableCollection<TemplateItem> _templateCollection = new ObservableCollection<TemplateItem>();
+        private Window_TemplateRoiSetting WindowTemplateRoiSetting = null;
+
         ScriptState _scriptState = ScriptState.IDLE;
         MessageItem _lastmsg = null;
         MessageHelper _msg_helper = new MessageHelper();
@@ -255,6 +263,22 @@ namespace Irixi_Aligner_Common.Classes
             saveFileDlg.Title = "";
             saveFileDlg.InitialDirectory = @"C:\";
             saveFileDlg.Filter = "文本文件| *.json";
+
+
+            //Just for test
+            RoiCollection.Add(new RoiItem() { StrName = "ROI1" });
+            RoiCollection.Add(new RoiItem() { StrName = "ROI2" });
+
+            TemplateCollection.Add(new TemplateItem() { StrName = "Template1" });
+            TemplateCollection.Add(new TemplateItem() { StrName = "Template2" });
+            TemplateCollection.Add(new TemplateItem() { StrName = "Template4" });
+            TemplateCollection.Add(new TemplateItem() { StrName = "Template5" });
+            TemplateCollection.Add(new TemplateItem() { StrName = "Template6" });
+            TemplateCollection.Add(new TemplateItem() { StrName = "Template7" });
+
+            CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam1", StrCameraState = "Connected" });
+            CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam2", StrCameraState = "Disconnected" });
+            CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam3", StrCameraState = "Connected" });
         }
         ~SystemService()
         {
@@ -510,6 +534,43 @@ namespace Irixi_Aligner_Common.Classes
         public CentralAlignArgs CentralAlignArgs
         {
             get;
+        }
+
+        public ObservableCollection<CameraItem> CameraCollection
+        {
+            get { return _cameraCollection; }
+            set
+            {
+                if (_cameraCollection != value)
+                {
+                    _cameraCollection = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        public ObservableCollection<RoiItem> RoiCollection
+        {
+            get { return _roiCollection; }
+            set
+            {
+                if (_roiCollection != value)
+                {
+                    _roiCollection = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        public ObservableCollection<TemplateItem> TemplateCollection
+        {
+            get { return _templateCollection; }
+            set
+            {
+                if (_templateCollection != value)
+                {
+                    _templateCollection = value;
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         #endregion
@@ -1689,7 +1750,18 @@ namespace Irixi_Aligner_Common.Classes
             }
         }
 
-
+        public RelayCommand SetRoiTemplateCommand
+        {
+            get
+            {
+                return new RelayCommand(()=> {
+                    if (WindowTemplateRoiSetting == null)
+                        WindowTemplateRoiSetting=new Window_TemplateRoiSetting();
+                    WindowTemplateRoiSetting.DataContext = this;
+                    WindowTemplateRoiSetting.ShowDialog();
+                });
+            }
+        }
         #endregion
     }
 }
