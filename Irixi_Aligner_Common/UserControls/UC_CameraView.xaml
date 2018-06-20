@@ -7,7 +7,8 @@
              xmlns:halcon="clr-namespace:HalconDotNet;assembly=halcondotnet"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             >
+             SizeChanged="UserControl_SizeChanged"
+             IsVisibleChanged="UserControl_IsVisibleChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -18,10 +19,10 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
-        <halcon:HWindowControlWPF x:Name="Cam1"/>
-        <halcon:HWindowControlWPF Grid.Row="0" Grid.Column="1" x:Name="Cam2"/>
-        <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="0" x:Name="Cam3"/>
-        <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="1" x:Name="Cam4"/>
+        <halcon:HWindowControlWPF x:Name="Cam1" Margin="1"/>
+        <halcon:HWindowControlWPF Grid.Row="0" Grid.Column="1" x:Name="Cam2" Margin="1"/>
+        <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="0" x:Name="Cam3" Margin="1"/>
+        <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="1" x:Name="Cam4" Margin="1"/>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="70"/>
@@ -31,7 +32,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource RoundButtonStyle1}" Margin="10,5,10,5" Background="Transparent" Grid.Column="1" Command="{Binding Service.SetRoiTemplateCommand}">
+            <Button Style="{StaticResource RoundButtonStyle1}" Margin="10,5,10,5" Background="Transparent" Grid.Column="1" Click="Button_Click">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>

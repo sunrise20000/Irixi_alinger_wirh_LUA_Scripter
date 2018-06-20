@@ -36,14 +36,14 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.ObjectModel;
 using IrixiStepperControllerHelper.Classes;
-using Irixi_Aligner_Common.UserControls;
+using Irixi_Aligner_Common.Models;
+using Irixi_Aligner_Common.Vision;
 
 namespace Irixi_Aligner_Common.Classes
 {
     sealed public class SystemService : ViewModelBase, IDisposable
     {
         #region Variables
-        
         MessageItem lastMessage = null;
         SystemState sysState = SystemState.IDLE;
 
@@ -60,7 +60,7 @@ namespace Irixi_Aligner_Common.Classes
         private ObservableCollection<CameraItem> _cameraCollection = new ObservableCollection<CameraItem>();
         private ObservableCollection<RoiItem> _roiCollection = new ObservableCollection<RoiItem>();
         private ObservableCollection<TemplateItem> _templateCollection = new ObservableCollection<TemplateItem>();
-        private Window_TemplateRoiSetting WindowTemplateRoiSetting = null;
+
 
         ScriptState _scriptState = ScriptState.IDLE;
         MessageItem _lastmsg = null;
@@ -76,12 +76,14 @@ namespace Irixi_Aligner_Common.Classes
         /// Output put initialization messages
         /// </summary>
         public event EventHandler<string> InitProgressChanged;
-
         public Dictionary<string, Dictionary<string, Dictionary<string, string>>> Enums { set; get; }
         private Task taskMonitor = null;
         private CancellationTokenSource cts = new CancellationTokenSource();
         private OpenFileDialog openFileDlg = new OpenFileDialog();
         private SaveFileDialog saveFileDlg = new SaveFileDialog();
+        private FileHelper ModelFileHelper = new FileHelper(FileHelper.GetCurFilePathString() + "VisionData\\Model");
+        private FileHelper RoiFileHelper = new FileHelper(FileHelper.GetCurFilePathString() + "VisionData\\Roi");
+        private EnumCamSnapState _camSnapState;
         #endregion
 
         #region Constructor
@@ -96,7 +98,8 @@ namespace Irixi_Aligner_Common.Classes
             Messenger.Default.Register<string>(this, "ScriptRunTimeError", msg => System.Windows.Application.Current.Dispatcher.Invoke(() => LastMessage = new MessageItem(MessageType.Error, msg)));
             Messenger.Default.Register<string>(this, "ScriptCompileOk", msg => System.Windows.Application.Current.Dispatcher.Invoke(() => LastMessage = new MessageItem(MessageType.Good, msg)));
             Messenger.Default.Register<string>(this, "ScriptFinish", m => { ScriptState = ScriptState.IDLE; });
-
+            Messenger.Default.Register<string>(this, "UpdateRoiFiles", str => UpdateRoiCollect(Convert.ToInt16(str.Substring(3, 1))));
+            Messenger.Default.Register<string>(this, "UpdateTemplateFiles", str => UpdateModelCollect(Convert.ToInt16(str.Substring(3, 1))));
             //ThreadPool.SetMinThreads(50, 50);
 
             // read version from AssemblyInfo.cs
@@ -266,15 +269,8 @@ namespace Irixi_Aligner_Common.Classes
 
 
             //Just for test
-            RoiCollection.Add(new RoiItem() { StrName = "ROI1" });
-            RoiCollection.Add(new RoiItem() { StrName = "ROI2" });
-
-            TemplateCollection.Add(new TemplateItem() { StrName = "Template1" });
-            TemplateCollection.Add(new TemplateItem() { StrName = "Template2" });
-            TemplateCollection.Add(new TemplateItem() { StrName = "Template4" });
-            TemplateCollection.Add(new TemplateItem() { StrName = "Template5" });
-            TemplateCollection.Add(new TemplateItem() { StrName = "Template6" });
-            TemplateCollection.Add(new TemplateItem() { StrName = "Template7" });
+            UpdateModelCollect(0);
+            UpdateRoiCollect(0);
 
             CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam1", StrCameraState = "Connected" });
             CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam2", StrCameraState = "Disconnected" });
@@ -571,6 +567,40 @@ namespace Irixi_Aligner_Common.Classes
                     RaisePropertyChanged();
                 }
             }
+        }
+        private void UpdateRoiCollect(int nCamID)
+        {
+            RoiCollection.Clear();
+            foreach (var it in Vision.VisionDataHelper.GetTemplateListForSpecCamera(nCamID, RoiFileHelper.GetWorkDictoryProfileList()))
+                RoiCollection.Add(new RoiItem() { StrName = it.Replace(string.Format("Cam{0}_", nCamID), ""), StrFullName = it });
+        }
+        private void UpdateModelCollect(int nCamID)
+        {
+            TemplateCollection.Clear();
+            foreach (var it in Vision.VisionDataHelper.GetTemplateListForSpecCamera(nCamID, ModelFileHelper.GetWorkDictoryProfileList()))
+                TemplateCollection.Add(new TemplateItem() { StrName = it.Replace(string.Format("Cam{0}_", nCamID), ""), StrFullName = it });
+        }
+        public Enum_REGION_TYPE RegionType
+        {
+            get { return Vision.Vision.Instance.RegionType; }
+            set { Vision.Vision.Instance.RegionType = value; }
+        }
+        public Enum_REGION_OPERATOR RegionOperator
+        {
+            get { return Vision.Vision.Instance.RegionOperator; }
+            set { Vision.Vision.Instance.RegionOperator = value; }
+        }
+        public EnumCamSnapState CamSnapState
+        {
+            set
+            {
+                if (_camSnapState != value)
+                {
+                    _camSnapState = value;
+                    RaisePropertyChanged();
+                }
+            }
+            get { return _camSnapState; }
         }
 
         #endregion
@@ -1749,17 +1779,28 @@ namespace Irixi_Aligner_Common.Classes
                 });
             }
         }
-
-        public RelayCommand SetRoiTemplateCommand
+        public RelayCommand<int> UpdateRoiTemplate
         {
             get
             {
-                return new RelayCommand(()=> {
-                    if (WindowTemplateRoiSetting == null)
-                        WindowTemplateRoiSetting=new Window_TemplateRoiSetting();
-                    WindowTemplateRoiSetting.DataContext = this;
-                    WindowTemplateRoiSetting.ShowDialog();
+                return new RelayCommand<int>(nCamID => {
+                    UpdateModelCollect(nCamID);
+                    UpdateRoiCollect(nCamID);
                 });
+            }
+        }
+        public RelayCommand<string> SetSnapStateCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(
+                    str => {
+                    Messenger.Default.Send<string>(str, "SetCamState");
+                    if (str.ToLower() == "snapcontinues")
+                    CamSnapState = EnumCamSnapState.BUSY;
+                    else
+                    CamSnapState = EnumCamSnapState.IDLE;
+                    });
             }
         }
         #endregion

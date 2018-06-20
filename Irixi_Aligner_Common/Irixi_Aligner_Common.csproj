@@ -262,6 +262,9 @@
     <Compile Include="Classes\BaseClass\ObservableCollectionThreadSafe.cs" />
     <Compile Include="Classes\BaseClass\Property.cs" />
     <Compile Include="Classes\CameraItem.cs" />
+    <Compile Include="Classes\Converters\EnumCamSnapState2SnapButtonEnable.cs" />
+    <Compile Include="Classes\Converters\IsChecked2RegionType.cs" />
+    <Compile Include="Classes\Converters\IsChecked2RegionOperator.cs" />
     <Compile Include="Classes\Converters\RoiTemplate2Visibility.cs" />
     <Compile Include="Classes\Converters\ScriptStateToGridEnable.cs" />
     <Compile Include="Classes\Converters\SystemStatusToCompileButtonEnable.cs" />
@@ -269,11 +272,11 @@
     <Compile Include="Classes\Converters\SystemStatusToScriptStopButtonImage.cs" />
     <Compile Include="Classes\Converters\SystemStatusToScriptStartButtonImage.cs" />
     <Compile Include="Classes\Converters\Text2CameStateImage.cs" />
+    <Compile Include="Classes\Converters\TextToBoolean.cs" />
     <Compile Include="Classes\Converters\TextToImage.cs" />
+    <Compile Include="Classes\FileHelper.cs" />
     <Compile Include="Classes\LuaWrapper.cs" />
-    <Compile Include="Classes\RoiItem.cs" />
     <Compile Include="Classes\ScriptHelpMgr.cs" />
-    <Compile Include="Classes\TemplateItem.cs" />
     <Compile Include="Configuration\ScriptCfg\Func.cs" />
     <Compile Include="Configuration\ScriptCfg\FuncManager.cs" />
     <Compile Include="Configuration\ScriptCfg\VM_TreeView.cs" />
@@ -306,6 +309,8 @@
     <Compile Include="Interfaces\IAlignmentArgs.cs" />
     <Compile Include="Interfaces\IHashable.cs" />
     <Compile Include="Interfaces\IScanCurve.cs" />
+    <Compile Include="Models\TemplateItem.cs" />
+    <Compile Include="Models\RoiItem.cs" />
     <Compile Include="UserControls\AlignmentFunc\AlignmentPanel.xaml.cs">
       <DependentUpon>AlignmentPanel.xaml</DependentUpon>
     </Compile>
@@ -317,6 +322,9 @@
     </Compile>
     <Compile Include="UserControls\UC_CameraView.xaml.cs">
       <DependentUpon>UC_CameraView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UC_CamViewListItem.xaml.cs">
+      <DependentUpon>UC_CamViewListItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UC_MessageBox.xaml.cs">
       <DependentUpon>UC_MessageBox.xaml</DependentUpon>
@@ -546,6 +554,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_CameraView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UC_CamViewListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

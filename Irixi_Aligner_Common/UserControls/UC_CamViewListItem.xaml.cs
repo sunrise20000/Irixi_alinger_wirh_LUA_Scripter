@@ -10,31 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Irixi_Aligner_Common.UserControls
 {
     /// <summary>
-    /// Window_TemplateRoiSetting.xaml 的交互逻辑
+    /// UC_CamViewListItem.xaml 的交互逻辑
     /// </summary>
-    
-    public partial class Window_TemplateRoiSetting : Window
+    public partial class UC_CamViewListItem : UserControl
     {
-        private bool bClose = false;
-        public Window_TemplateRoiSetting()
+        public UC_CamViewListItem()
         {
             InitializeComponent();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-            Hide();
-            e.Cancel = !bClose;
-        }
-        public void SetCloseFlag(bool bClose)
-        {
-            this.bClose = bClose;
         }
     }
 }

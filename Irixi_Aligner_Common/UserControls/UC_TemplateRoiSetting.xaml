@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Irixi_Aligner_Common.UserControls"
              xmlns:halcon="clr-namespace:HalconDotNet;assembly=halcondotnet"
+             xmlns:UserCtrl="clr-namespace:Irixi_Aligner_Common.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="800" d:DesignWidth="1000"
+             IsVisibleChanged="UserControl_IsVisibleChanged">
     <UserControl.Resources>
         <Storyboard x:Key="TemplateSb" Completed="Storyboard2TemplateCompleted">
             <DoubleAnimation Storyboard.TargetName="SelectTrans"  Storyboard.TargetProperty="X" From="88" To="0" BeginTime="00:00:00" Duration="00:00:0.2"/>
@@ -24,7 +26,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="352"/>
         </Grid.ColumnDefinitions>
-        <halcon:HWindowControlWPF Grid.Row="0" Grid.Column="0" Margin="1" x:Name="Cam1"/>
+        <halcon:HWindowControlWPF x:Name="CamDebug" Grid.Row="0" Grid.Column="0" Margin="1"/>
         <Grid Grid.Row="0" Grid.Column="4" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="70"/>
@@ -41,7 +43,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Background="Transparent" Style="{StaticResource RoundButtonStyle1}" Height="50" ToolTip="单帧采集" Margin="5">
+            <Button Background="LightGreen" Style="{StaticResource RoundButtonStyle1}" Height="50" ToolTip="单帧采集" Margin="5" 
+                    Command="{Binding SetSnapStateCommand}" CommandParameter="SnapOnce" IsEnabled="{Binding CamSnapState,ConverterParameter=SnapOnce,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -53,7 +56,8 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button Grid.Column="1" Background="Transparent" Style="{StaticResource RoundButtonStyle1}" Height="50" ToolTip="连续采集" Margin="5">
+            <Button Grid.Column="1" Background="LightGreen" Style="{StaticResource RoundButtonStyle1}" Height="50" ToolTip="连续采集" Margin="5" 
+                    Command="{Binding SetSnapStateCommand}" CommandParameter="SnapContinues" IsEnabled="{Binding CamSnapState,ConverterParameter=SnapOnce,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -65,7 +69,8 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button Grid.Row="1" Style="{StaticResource RoundButtonStyle1}"  Background="Transparent" ToolTip="停止采集" Margin="5" Height="50">
+            <Button Grid.Row="1" Style="{StaticResource RoundButtonStyle1}"  Background="LightGreen" ToolTip="停止采集" Margin="5" Height="50" Command="{Binding SetSnapStateCommand}" CommandParameter="StopSnap"
+                    IsEnabled="{Binding CamSnapState,ConverterParameter=StopSnap,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -77,7 +82,7 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,12,5,12" ItemsSource="{Binding CameraCollection}" SelectedIndex="0">
+            <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,12,5,12" ItemsSource="{Binding CameraCollection}" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -102,45 +107,37 @@
             </Rectangle>
             <Grid Grid.Row="3" Grid.Column="1" Margin="10,0,0,0" Visibility="{Binding CurrentSelectRoiTemplate, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Converter={StaticResource RoiTemplate2Visibility}}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <RadioButton VerticalAlignment="Center" Content="圆形" FontSize="20"/>
-                <RadioButton Grid.Column="1" VerticalAlignment="Center" Content="矩形" FontSize="20"/>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <RadioButton Content="+" FontSize="20" VerticalContentAlignment="Center" IsChecked="{Binding RegionOperator, Converter={StaticResource IsChecked2RegionOperator}}"/>
+                    <RadioButton Grid.Row="1" Content="-" FontSize="20" VerticalContentAlignment="Center" />
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <RadioButton  VerticalAlignment="Center" Content="圆形" FontSize="20" VerticalContentAlignment="Center" IsChecked="{Binding RegionType, Converter={StaticResource IsChecked2RegionType}}"/>
+                    <RadioButton Grid.Row="1"  VerticalAlignment="Center" Content="矩形" FontSize="20" VerticalContentAlignment="Center" />
+                </Grid>
+
             </Grid>
-            <ListBox x:Name="ListBoxRoiTemplate" Grid.Row="4" Grid.ColumnSpan="2" Grid.RowSpan="3" Margin="5" SelectedIndex="0" ItemsSource="{Binding TemplateCollection}">
+            <ListBox x:Name="ListBoxRoiTemplate" Grid.Row="4" Grid.ColumnSpan="2" Grid.RowSpan="3" Margin="5" SelectedIndex="0" ItemsSource="{Binding TemplateCollection}" IsEnabled="{Binding CamSnapState,ConverterParameter=ListBoxForRoiAndTemplate,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="AddNew" FontSize="30"/>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="190"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding StrName}" VerticalAlignment="Center" FontSize="20"/>
-                            <Button Grid.Column="1" Style="{StaticResource RoundButtonStyle1}"  Background="Transparent" Height="40" VerticalAlignment="Center" BorderThickness="0" Margin="2,0,2,0">
-                                <Button.Content>
-                                    <Grid>
-                                        <Image Margin="3" Source="/Irixi_Aligner_Common;component/Resources/Images/Icons/New.png"/>
-                                    </Grid>
-                                </Button.Content>
-                            </Button>
-                            <Button Grid.Column="2" Style="{StaticResource RoundButtonStyle1}"  Background="Transparent" Height="40" VerticalAlignment="Center" BorderThickness="0" Margin="2,0,2,0">
-                                <Button.Content>
-                                    <Grid>
-                                        <Image Margin="3" Source="/Irixi_Aligner_Common;component/Resources/Images/Icons/Edit.png"/>
-                                    </Grid>
-                                </Button.Content>
-                            </Button>
-                            <Button Grid.Column="3" Style="{StaticResource RoundButtonStyle1}" Background="Transparent" Height="40" VerticalAlignment="Center" BorderThickness="0" Margin="2,0,2,0">
-                                <Button.Content>
-                                    <Grid>
-                                        <Image Margin="3" Source="/Irixi_Aligner_Common;component/Resources/Images/Icons/Delete.png"/>
-                                    </Grid>
-                                </Button.Content>
-                            </Button>
-                        </Grid>
+                        <UserCtrl:UC_CamViewListItem/>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

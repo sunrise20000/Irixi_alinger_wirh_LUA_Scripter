@@ -338,6 +338,8 @@ namespace Irixi_Aligner_Common
             #region Close ScriptWindow
             ScriptWindow.SetCloseFlag(true);
             ScriptWindow.Close();
+
+            
             #endregion
 
         }
@@ -411,6 +413,7 @@ namespace Irixi_Aligner_Common
         {  
                 ScriptWindow.Show();
         }
+
     }
 
 }

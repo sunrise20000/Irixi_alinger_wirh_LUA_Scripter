@@ -275,9 +275,10 @@
                             AllowDock="true" 
                             AllowMaximize="true" 
                             AllowDockToDocumentGroup="False"
-                            Visibility="Hidden">
+                            Visibility="Hidden"
+                            >
                             <Grid>
-                                <UserControls:UC_CameraView/>
+                                <UserControls:UC_CameraView x:Name="UctrCameraView"/>
                             </Grid>
                         </dxd:DocumentPanel>
                         <!-- AlignmentnD Panel -->
