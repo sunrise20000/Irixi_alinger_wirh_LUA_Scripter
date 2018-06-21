@@ -76,6 +76,7 @@ namespace Irixi_Aligner_Common.ViewModel
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
+            
         }
     }
 }

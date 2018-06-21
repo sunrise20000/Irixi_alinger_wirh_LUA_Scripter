@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+
 using GalaSoft.MvvmLight.Messaging;
 using HalconDotNet;
 
@@ -16,6 +20,7 @@ namespace Irixi_Aligner_Common.Vision
         BUSY,
         DISCONNECTED
     }
+
     public class Vision
     {
         #region constructor
@@ -29,6 +34,10 @@ namespace Irixi_Aligner_Common.Vision
             }
             HOperatorSet.GenEmptyObj(out Region);
         }
+
+    
+
+
         private static readonly Lazy<Vision> _instance = new Lazy<Vision>(() => new Vision());
         public static Vision Instance
         {
@@ -48,6 +57,7 @@ namespace Irixi_Aligner_Common.Vision
         private List<HObject> HoImageList = new List<HObject>(10);    //Image
         private List<HTuple> AcqHandleList = new List<HTuple>(10);    //Aqu
         private Dictionary<int, Dictionary<string, HTuple>> HwindowDic = new Dictionary<int, Dictionary<string, HTuple>>();    //Hwindow
+        private Dictionary<int, Dictionary<string, System.Windows.Controls.Image>> ImageWindowDic = new Dictionary<int, Dictionary<string, System.Windows.Controls.Image>>();   //ImageWindow in WPF
         private Dictionary<int, Tuple<HTuple, HTuple>> ActiveCamDic = new Dictionary<int, Tuple<HTuple, HTuple>>();
         private HObject Region = null;
         public Enum_REGION_OPERATOR RegionOperator = Enum_REGION_OPERATOR.ADD;
@@ -74,9 +84,42 @@ namespace Irixi_Aligner_Common.Vision
                 if (ActiveCamDic.Keys.Contains(nCamID))
                     HOperatorSet.SetPart(HwindowDic[nCamID][Name], 0, 0, ActiveCamDic[nCamID].Item2, ActiveCamDic[nCamID].Item1);
 
-
                 //需要解除此窗口与其他相机的关联
                 foreach (var kps in HwindowDic)
+                {
+                    if (kps.Key == nCamID)
+                        continue;
+                    foreach (var kp in kps.Value)
+                    {
+                        if (kp.Key == Name)
+                        {
+                            kps.Value.Remove(Name);
+                            break;
+                        }
+                    }
+                }
+                return true;
+            }
+
+        }
+        public bool AttachCamWIndow(int nCamID, string Name, System.Windows.Controls.Image imageWindow) //同一个相机最多只能与一个窗口绑定
+        {
+            lock (_lockList[nCamID])
+            {
+                //关联当前窗口
+                if (ImageWindowDic.Keys.Contains(nCamID))
+                {
+                    var its = from hd in ImageWindowDic[nCamID] where hd.Key == Name select hd;
+                    if (its.Count() == 0)
+                        ImageWindowDic[nCamID].Add(Name, imageWindow);
+                    else
+                        ImageWindowDic[nCamID][Name] = imageWindow;
+                }
+                else
+                    ImageWindowDic.Add(nCamID, new Dictionary<string, System.Windows.Controls.Image>() { { Name, imageWindow } });
+               
+                //需要解除此窗口与其他相机的关联
+                foreach (var kps in ImageWindowDic)
                 {
                     if (kps.Key == nCamID)
                         continue;
@@ -102,9 +145,17 @@ namespace Irixi_Aligner_Common.Vision
                     if (HwindowDic[nCamID].Keys.Contains(Name))
                         HwindowDic[nCamID].Remove(Name);
                 }
+                if(ImageWindowDic.Keys.Contains(nCamID))
+                {
+                    if (ImageWindowDic[nCamID].Keys.Contains(Name))
+                        ImageWindowDic[nCamID].Remove(Name);
+                }
                 return true;
             }
         }
+   
+
+
         public bool OpenCam(int nCamID)
         {
             HObject image = null;
@@ -178,6 +229,7 @@ namespace Irixi_Aligner_Common.Vision
         public void GrabImage(int nCamID, bool bDispose = true)
         {
             HObject image = null;
+            Bitmap bitmap = null;
             try
             {
                 lock (_lockList[nCamID])
@@ -198,12 +250,24 @@ namespace Irixi_Aligner_Common.Vision
                     {
                         ImageTemp.Dispose();
                         ImageTemp = null;
+                        
                     }
                     HOperatorSet.GrabImage(out image, AcqHandleList[nCamID]);
                     HOperatorSet.GenEmptyObj(out ImageTemp);
                     HOperatorSet.ConcatObj(ImageTemp, image, out ImageTemp);
                     foreach (var it in HwindowDic[nCamID])
-                        HOperatorSet.DispObj(image, it.Value);
+                       if(it.Value!=-1)
+                            HOperatorSet.DispObj(image, it.Value);
+
+                    //显示图片
+                    VisionDataHelper.GenertateRGBBitmap(image, out bitmap);
+                    if (ImageWindowDic.Keys.Contains(nCamID))
+                    {
+                        foreach (var it in ImageWindowDic[nCamID])
+                        {
+                            it.Value.Source = VisionDataHelper.ChangeBitmapToImageSource(bitmap);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -214,8 +278,13 @@ namespace Irixi_Aligner_Common.Vision
             {
                 if (bDispose && image != null)
                 {
-
                     image.Dispose();
+                    image = null;
+                }
+                if (bDispose && bitmap != null)
+                {
+                    bitmap.Dispose();
+                    bitmap = null;
                 }
             }
         }
@@ -308,6 +377,8 @@ namespace Irixi_Aligner_Common.Vision
 
     public class VisionDataHelper
     {
+        [DllImport("kernel32")]
+        public static extern int CopyMemory(int pSource, int pDes, Int32 nSize);
         public static List<string> GetRoiListForSpecCamera(int nCamID, List<string> fileListInDataDirection)
         {
             var list = new List<string>();
@@ -328,6 +399,83 @@ namespace Irixi_Aligner_Common.Vision
             }
             return list;
         }
+        public static void GenertateGrayBitmap(HObject image, out Bitmap res)
+        {
+            HTuple hpoint, type, width, height;
 
+            const int Alpha = 255;
+            int[] ptr = new int[2];
+            HOperatorSet.GetImagePointer1(image, out hpoint, out type, out width, out height);
+
+            res = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
+            ColorPalette pal = res.Palette;
+            for (int i = 0; i <= 255; i++)
+            {
+                pal.Entries[i] = Color.FromArgb(Alpha, i, i, i);
+            }
+            res.Palette = pal;
+            Rectangle rect = new Rectangle(0, 0, width, height);
+            BitmapData bitmapData = res.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            int PixelSize = Bitmap.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
+            ptr[0] = bitmapData.Scan0.ToInt32();
+            ptr[1] = hpoint.I;
+            if (width % 4 == 0)
+                CopyMemory(ptr[0], ptr[1], width * height * PixelSize);
+            else
+            {
+                for (int i = 0; i < height - 1; i++)
+                {
+                    ptr[1] += width;
+                    CopyMemory(ptr[0], ptr[1], width * PixelSize);
+                    ptr[0] += bitmapData.Stride;
+                }
+            }
+            res.UnlockBits(bitmapData);
+        }
+        unsafe public static void GenertateRGBBitmap(HObject image, out Bitmap res)
+        {
+            HTuple hred, hgreen, hblue, type, width, height,pImage;
+
+            HOperatorSet.GetImagePointer3(image, out hred, out hgreen, out hblue, out type, out width, out height);
+            HOperatorSet.GetImagePointer1(image,out pImage, out type, out width, out height);
+            byte* ppp = (byte*)pImage.I;
+            res = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            Rectangle rect = new Rectangle(0, 0, width.I, height.I);
+            BitmapData bitmapData = res.LockBits(rect, ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+
+            {
+                byte* bptr = (byte*)bitmapData.Scan0;
+                byte* r = ((byte*)hred.I);
+                byte* g = ((byte*)hgreen.I);
+                byte* b = ((byte*)hblue.I);
+                for (int i = 0; i < width * height; i++)
+                {
+                    bptr[i * 4] = (b)[i];
+                    bptr[i * 4 + 1] = (g)[i];
+                    bptr[i * 4 + 2] = (r)[i];
+                    bptr[i * 4 + 3] = 255;
+                }
+            }
+            res.UnlockBits(bitmapData);
+        }
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+        public static System.Windows.Media.ImageSource ChangeBitmapToImageSource(Bitmap bitmap)
+        {
+            IntPtr hBitmap = bitmap.GetHbitmap();
+            System.Windows.Media.ImageSource wpfBitmap = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                hBitmap,
+                IntPtr.Zero,
+                System.Windows.Int32Rect.Empty,
+                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+            if (!DeleteObject(hBitmap))
+            {
+                throw new System.ComponentModel.Win32Exception();
+            }
+            return wpfBitmap;
+        }
     }
+
 }

@@ -339,6 +339,8 @@ namespace Irixi_Aligner_Common
             ScriptWindow.SetCloseFlag(true);
             ScriptWindow.Close();
 
+            UctrCameraView.UC_CameraView_Closing();
+
             
             #endregion
 
@@ -370,6 +372,7 @@ namespace Irixi_Aligner_Common
             {
                 if(e.Item.Visibility == Visibility.Visible)
                     dockLayoutManager.MDIController.Activate(e.Item);
+          
             }
         }
 

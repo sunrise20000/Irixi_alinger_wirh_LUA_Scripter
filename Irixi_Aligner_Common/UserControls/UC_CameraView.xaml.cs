@@ -100,10 +100,11 @@ namespace Irixi_Aligner_Common.UserControls
         {
             if (bAttach)
             {
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam1", Cam1.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam2", Cam2.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam3", Cam3.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam4", Cam4.HalconWindow);
+                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam1", Cam1);
+                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam2", Cam2);
+                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam3", Cam3);
+                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam4", Cam4);
+
             }
             else
             {
@@ -111,6 +112,7 @@ namespace Irixi_Aligner_Common.UserControls
                 Vision.Vision.Instance.DetachCamWindow(0, "ViewCam2");
                 Vision.Vision.Instance.DetachCamWindow(0, "ViewCam3");
                 Vision.Vision.Instance.DetachCamWindow(0, "ViewCam4");
+
             }
         }
         private async void LoadDelay()
@@ -133,6 +135,11 @@ namespace Irixi_Aligner_Common.UserControls
             {
                 SetAttachWindow(false);
             }
+        }
+        public void UC_CameraView_Closing()
+        {
+            WindowTemplateRoiSetting.SetCloseFlag(true);
+            WindowTemplateRoiSetting.Close();
         }
     }
 }

@@ -19,10 +19,12 @@
                     xmlns:local="clr-namespace:Irixi_Aligner_Common" 
                     xmlns:Converters="clr-namespace:Irixi_Aligner_Common.Classes.Converters" 
                     xmlns:UserControls="clr-namespace:Irixi_Aligner_Common.UserControls"
-                    xmlns:apanel="clr-namespace:Irixi_Aligner_Common.UserControls.AlignmentFunc">
+                    xmlns:apanel="clr-namespace:Irixi_Aligner_Common.UserControls.AlignmentFunc"
+                    >
     <dxr:DXRibbonWindow.Resources>
         <Converters:VisibilityToBoolean x:Key="VisibilityToBoolean" />
         <Converters:OutputStateToBoolean x:Key="OutputStateToBoolean" />
+     
     </dxr:DXRibbonWindow.Resources>
     <DockPanel DataContext="{Binding Source={StaticResource Locator}}">
         <dxr:RibbonControl x:Name="ribbonControl1" DockPanel.Dock="Top" AllowCustomization="False" ToolbarShowCustomizationButton="False" RibbonStyle="Office2010">
@@ -292,7 +294,7 @@
                                            AllowMaximize="true" 
                                            AllowDockToDocumentGroup="False" 
                                            Visibility="Hidden">
-
+                            
                             <Grid IsEnabled="{Binding Service.ScriptState , Converter={StaticResource ScriptStateToGridEnable}}">
                                 <apanel:AlignmentPanel 
                                 DataContext="{Binding Service.AlignmentXDArgs}" 
