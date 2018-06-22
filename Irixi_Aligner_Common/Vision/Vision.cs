@@ -35,9 +35,6 @@ namespace Irixi_Aligner_Common.Vision
             HOperatorSet.GenEmptyObj(out Region);
         }
 
-    
-
-
         private static readonly Lazy<Vision> _instance = new Lazy<Vision>(() => new Vision());
         public static Vision Instance
         {
@@ -102,7 +99,7 @@ namespace Irixi_Aligner_Common.Vision
             }
 
         }
-        public bool AttachCamWIndow(int nCamID, string Name, System.Windows.Controls.Image imageWindow) //同一个相机最多只能与一个窗口绑定
+        public bool AttachCamWIndow(int nCamID, string Name, System.Windows.Controls.Image imageWindow) //同一个窗口最多只能与一个相机绑定
         {
             lock (_lockList[nCamID])
             {
@@ -154,8 +151,6 @@ namespace Irixi_Aligner_Common.Vision
             }
         }
    
-
-
         public bool OpenCam(int nCamID)
         {
             HObject image = null;

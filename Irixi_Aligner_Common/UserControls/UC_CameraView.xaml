@@ -20,14 +20,14 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
-        <!--<halcon:HWindowControlWPF x:Name="Cam1" Margin="1"/>
+        <halcon:HWindowControlWPF x:Name="Cam1" Margin="1"/>
         <halcon:HWindowControlWPF Grid.Row="0" Grid.Column="1" x:Name="Cam2" Margin="1"/>
         <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="0" x:Name="Cam3" Margin="1"/>
-        <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="1" x:Name="Cam4" Margin="1"/>-->
-        <Image x:Name="Cam1" Margin="1" />
+        <halcon:HWindowControlWPF Grid.Row="1" Grid.Column="1" x:Name="Cam4" Margin="1"/>
+        <!--<Image x:Name="Cam1" Margin="1" />
         <Image Grid.Row="0" Grid.Column="1" x:Name="Cam2" Margin="1" />
         <Image Grid.Row="1" Grid.Column="0" x:Name="Cam3" Margin="1" />
-        <Image Grid.Row="1" Grid.Column="1" x:Name="Cam4" Margin="1" />
+        <Image Grid.Row="1" Grid.Column="1" x:Name="Cam4" Margin="1" />-->
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="70"/>

@@ -566,7 +566,6 @@ namespace Irixi_Aligner_Common.UserControls
                     rawDataDic[it.Category].Add(it.FunctionName);
             }
 
-
             //Enum
             enumInfos = (DataContext as ViewModelLocator).Service.EnumInfos["ENUM"];
             List<Node> N2 = new List<Node>();
@@ -702,8 +701,6 @@ namespace Irixi_Aligner_Common.UserControls
         private void btn_stop_Click(object sender, RoutedEventArgs e)
         {
             Messenger.Default.Send<string>("", "ScriptStop");
-
-
         }
         private void btn_run_Click(object sender, RoutedEventArgs e)
         {
