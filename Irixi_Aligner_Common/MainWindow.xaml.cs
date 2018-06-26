@@ -340,8 +340,6 @@ namespace Irixi_Aligner_Common
             ScriptWindow.Close();
 
             UctrCameraView.UC_CameraView_Closing();
-
-            
             #endregion
 
         }

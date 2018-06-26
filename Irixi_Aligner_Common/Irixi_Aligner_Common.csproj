@@ -278,6 +278,7 @@
     <Compile Include="Classes\FileHelper.cs" />
     <Compile Include="Classes\LuaWrapper.cs" />
     <Compile Include="Classes\ScriptHelpMgr.cs" />
+    <Compile Include="Configuration\CameraCfg\CameraCfg.cs" />
     <Compile Include="Configuration\ScriptCfg\Func.cs" />
     <Compile Include="Configuration\ScriptCfg\FuncManager.cs" />
     <Compile Include="Configuration\ScriptCfg\VM_TreeView.cs" />

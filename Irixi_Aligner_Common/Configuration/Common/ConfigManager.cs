@@ -26,6 +26,7 @@ namespace Irixi_Aligner_Common.Configuration.Common
 
                 // Convert to object 
                 this.ConfSystemSetting = JsonConvert.DeserializeObject<ConfigurationSystemSetting>(json_string);
+                CameraCfgList = ConfSystemSetting.Cameras;
             }
             catch (Exception ex)
             {
@@ -133,6 +134,7 @@ namespace Irixi_Aligner_Common.Configuration.Common
         public LayoutManager ConfWSLayout { get; set; }
         public FuncManager FuncManager { get; set; } 
 
+        public CameraCfg.CameraCfg[] CameraCfgList { get; set; }
         /// <summary>
         /// Save the layout of document group
         /// </summary>

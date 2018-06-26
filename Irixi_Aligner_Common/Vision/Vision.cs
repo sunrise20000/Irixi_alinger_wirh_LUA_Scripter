@@ -254,15 +254,15 @@ namespace Irixi_Aligner_Common.Vision
                        if(it.Value!=-1)
                             HOperatorSet.DispObj(image, it.Value);
 
-                    //显示图片
-                    VisionDataHelper.GenertateRGBBitmap(image, out bitmap);
-                    if (ImageWindowDic.Keys.Contains(nCamID))
-                    {
-                        foreach (var it in ImageWindowDic[nCamID])
-                        {
-                            it.Value.Source = VisionDataHelper.ChangeBitmapToImageSource(bitmap);
-                        }
-                    }
+                    ////显示图片
+                    //VisionDataHelper.GenertateRGBBitmap(image, out bitmap);
+                    //if (ImageWindowDic.Keys.Contains(nCamID))
+                    //{
+                    //    foreach (var it in ImageWindowDic[nCamID])
+                    //    {
+                    //        it.Value.Source = VisionDataHelper.ChangeBitmapToImageSource(bitmap);
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)

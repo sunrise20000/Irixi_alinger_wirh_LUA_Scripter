@@ -272,9 +272,9 @@ namespace Irixi_Aligner_Common.Classes
             UpdateModelCollect(0);
             UpdateRoiCollect(0);
 
-            CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam1", StrCameraState = "Connected" });
-            CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam2", StrCameraState = "Disconnected" });
-            CameraCollection.Add(new CameraItem() { CameraName = "CameraView_Cam3", StrCameraState = "Connected" });
+            foreach(var cam in configMgr.CameraCfgList)
+                CameraCollection.Add(new CameraItem() { CameraName =cam.Name, StrCameraState = "Connected" });
+
         }
         ~SystemService()
         {

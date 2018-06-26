@@ -27,6 +27,8 @@ namespace Irixi_Aligner_Common.Configuration.Common
         /// </summary>
         public ConfigLogicalMotionComponent[] LogicalMotionComponents{ get; set; }
 
+        public CameraCfg.CameraCfg[] Cameras { get; set; }
+
        
     }
 }
