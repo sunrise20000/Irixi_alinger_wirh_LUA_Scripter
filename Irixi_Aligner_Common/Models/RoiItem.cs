@@ -4,6 +4,7 @@ using Irixi_Aligner_Common.Classes;
 using Irixi_Aligner_Common.UserControls;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,13 +40,14 @@ namespace Irixi_Aligner_Common.Models
             StringBuilder sb = new StringBuilder();
             sb.Append(FileHelper.GetCurFilePathString());
             sb.Append("VisionData\\Roi\\");
+            if (!Directory.Exists(sb.ToString()))
+                throw new Exception(string.Format("{0} is not exist", sb.ToString()));
             sb.Append(item.StrFullName);
             sb.Append(".reg");
-            if (UC_MessageBox.Instance.ShowBox(string.Format("确定要删除{0}吗?", item.StrName)) == System.Windows.MessageBoxResult.Yes)
-            {
-                FileHelper.DeleteFile(sb.ToString());
-                Messenger.Default.Send<string>(item.StrFullName, "UpdateRoiFiles");
-            }
+            if(File.Exists(sb.ToString()))
+                throw new Exception(string.Format("{0} is not exist", sb.ToString()));
+            FileHelper.DeleteFile(sb.ToString());
+            Messenger.Default.Send<string>(item.StrFullName, "UpdateRoiFiles");
         });
 
     }

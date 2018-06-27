@@ -45,6 +45,7 @@ namespace Irixi_Aligner_Common.ViewModel
                 SimpleIoc.Default.Register<SystemService>();
                 SimpleIoc.Default.Register<ConfigManager>();
                 SimpleIoc.Default.Register<PositionPresetManager>();
+
             }
         }
 
@@ -72,7 +73,7 @@ namespace Irixi_Aligner_Common.ViewModel
             }
 
         }
-        
+ 
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

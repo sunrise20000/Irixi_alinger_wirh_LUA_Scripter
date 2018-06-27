@@ -19,50 +19,35 @@ namespace Irixi_Aligner_Common.UserControls
     /// </summary>
     public partial class UC_MessageBox : Window
     {
-        private static MessageBoxResult result;
-        private static UC_MessageBox _inst =null;
-        public static UC_MessageBox Instance
-        {
-            get
-            {
-                if (_inst == null)
-                    _inst = new UC_MessageBox();
-                return _inst;
-            }
-        }
+        private  MessageBoxResult result;
         private UC_MessageBox()
         {
             InitializeComponent();
-            StrCaption = "GPAS";
-            StrContent = "Message";
         }
-        public MessageBoxResult ShowBox(string strContent, string strCaption="GPAS")
+        public static MessageBoxResult ShowBox(string strContent, string strCaption = "GPAS")
         {
-            this.StrCaption = strCaption;
-            this.StrContent = strContent;
-            WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            ShowDialog();
-            return result;
+            UC_MessageBox dlg = new UC_MessageBox();
+            dlg.StrCaption = strCaption;
+            dlg.StrContent = strContent;
+            dlg.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            dlg.ShowDialog();
+            return dlg.result;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonYes_Click(object sender, RoutedEventArgs e)
         {
             result = MessageBoxResult.Yes;
             Close();
-            _inst = null;
         }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ButtonNo_Click(object sender, RoutedEventArgs e)
         {
             result = MessageBoxResult.No;
             Close();
-            _inst = null;
         }
         public string StrCaption { get { return GetValue(StrCaptionProperty).ToString(); } set { SetValue(StrCaptionProperty, value); } }
         public string StrContent { get { return GetValue(StrContentProperty).ToString(); } set { SetValue(StrContentProperty, value); } }
         public static readonly DependencyProperty StrCaptionProperty = DependencyProperty.Register("StrCaption", typeof(string), typeof(UC_MessageBox));
         public static readonly DependencyProperty StrContentProperty = DependencyProperty.Register("StrContent", typeof(string), typeof(UC_MessageBox));
-
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)

@@ -272,9 +272,7 @@ namespace Irixi_Aligner_Common.Classes
             UpdateModelCollect(0);
             UpdateRoiCollect(0);
 
-            foreach(var cam in configMgr.CameraCfgList)
-                CameraCollection.Add(new CameraItem() { CameraName =cam.Name, StrCameraState = "Connected" });
-
+            InitCamList();
         }
         ~SystemService()
         {
@@ -580,6 +578,17 @@ namespace Irixi_Aligner_Common.Classes
             foreach (var it in Vision.VisionDataHelper.GetTemplateListForSpecCamera(nCamID, ModelFileHelper.GetWorkDictoryProfileList()))
                 TemplateCollection.Add(new TemplateItem() { StrName = it.Replace(string.Format("Cam{0}_", nCamID), ""), StrFullName = it });
         }
+        private void InitCamList()
+        {
+            CameraCollection.Clear();
+            int i = 0;
+            foreach (var it in Vision.Vision.Instance.FindCamera(EnumCamType.GigEVision))
+            {
+                bool bOpen = Vision.Vision.Instance.OpenCam(i++);
+                CameraCollection.Add(new CameraItem() { CameraName = it.Key, StrCameraState = bOpen? "Connected" : "DisConnected" });
+            }
+        }
+
         public Enum_REGION_TYPE RegionType
         {
             get { return Vision.Vision.Instance.RegionType; }
@@ -1789,18 +1798,26 @@ namespace Irixi_Aligner_Common.Classes
                 });
             }
         }
-        public RelayCommand<string> SetSnapStateCommand
+        public RelayCommand<int> SnapContinuousCommand
         {
             get
             {
-                return new RelayCommand<string>(
-                    str => {
-                    Messenger.Default.Send<string>(str, "SetCamState");
-                    if (str.ToLower() == "snapcontinues")
+                return new RelayCommand<int>(nCamID =>
+                {
+                    Messenger.Default.Send<Tuple<string, int>>(new Tuple<string, int>("SnapContinuous", nCamID), "SetCamState");
                     CamSnapState = EnumCamSnapState.BUSY;
-                    else
+                });
+            }
+        }
+        public RelayCommand<int> StopSnapCommand
+        {
+            get
+            {
+                return new RelayCommand<int>(nCamID =>
+                {
+                    Messenger.Default.Send<Tuple<string, int>>(new Tuple<string, int>("StopSnap", nCamID), "SetCamState");
                     CamSnapState = EnumCamSnapState.IDLE;
-                    });
+                });
             }
         }
         #endregion

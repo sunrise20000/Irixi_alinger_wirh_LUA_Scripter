@@ -17,7 +17,7 @@ namespace Irixi_Aligner_Common.UserControls
     /// <summary>
     /// Window_TemplateRoiSetting.xaml 的交互逻辑
     /// </summary>
-    
+
     public partial class Window_TemplateRoiSetting : Window
     {
         private bool bClose = false;
@@ -25,16 +25,21 @@ namespace Irixi_Aligner_Common.UserControls
         {
             InitializeComponent();
         }
+        public void ShowDlg()
+        {
+            ShowDialog();
+        }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
             Hide();
             e.Cancel = !bClose;
         }
-        public void SetCloseFlag(bool bClose)
+        public void CLoseDlg()
         {
-            this.bClose = bClose;
+            bClose = true;
+            Close();
         }
+            
     }
 }

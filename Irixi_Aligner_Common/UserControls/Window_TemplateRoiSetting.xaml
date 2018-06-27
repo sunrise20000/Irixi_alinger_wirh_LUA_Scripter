@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Window_TemplateRoiSetting" Height="800" Width="1200"
         Closing="Window_Closing">
-    <Grid>
+    <Grid DataContext="{Binding Service,Source={StaticResource Locator}}">
         <local:UC_TemplateRoiSetting/>
     </Grid>
 </Window>

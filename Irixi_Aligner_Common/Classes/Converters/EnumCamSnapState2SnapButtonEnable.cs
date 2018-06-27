@@ -19,17 +19,17 @@ namespace Irixi_Aligner_Common.Classes.Converters
             switch (strPata)
             {
                 case "SnapOnce":
+                case "SnapContinuous":
+                case "ListBoxForRoiAndTemplate":
+                case "ComboBoxCameras":
                     bRet = CamSnapState == EnumCamSnapState.IDLE;
                     break;
-                case "SnapContinues":
-                    bRet = CamSnapState == EnumCamSnapState.IDLE;
-                    break;
+
                 case "StopSnap":
                     bRet = CamSnapState == EnumCamSnapState.BUSY;
                     break;
-                case "ListBoxForRoiAndTemplate":
-                    bRet = CamSnapState == EnumCamSnapState.IDLE;
-                    break;
+
+
                 default:
                     throw new Exception("Unknow cmd for converter named EnumCamSnapState2SnapButtonEnable");
             }

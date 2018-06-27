@@ -2,6 +2,7 @@
 using Irixi_Aligner_Common.Classes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +22,28 @@ namespace Irixi_Aligner_Common.UserControls
     /// <summary>
     /// UC_TemplateRoiSetting.xaml 的交互逻辑
     /// </summary>
-    public partial class UC_TemplateRoiSetting : UserControl
+    public partial class UC_TemplateRoiSetting : UserControl,INotifyPropertyChanged
     {
+
         public UC_TemplateRoiSetting()
         {
             InitializeComponent();
         }
+  
         private bool bFirstLoaded = true;
+        private int _currentSelectRoiTemplate=0;
+        public event PropertyChangedEventHandler PropertyChanged;
+        public int CurrentSelectRoiTemplate
+        {
+            get { return _currentSelectRoiTemplate; }
+            set {
+                if (_currentSelectRoiTemplate != value)
+                {
+                    _currentSelectRoiTemplate = value;
+                    PropertyChanged?.Invoke(this,new PropertyChangedEventArgs("CurrentSelectRoiTemplate"));
+                }
+            }
+        }
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Storyboard RoiSb = FindResource("RoiSb") as Storyboard;
@@ -42,44 +58,48 @@ namespace Irixi_Aligner_Common.UserControls
         {
             ListBoxRoiTemplate.ItemsSource = (DataContext as SystemService).TemplateCollection;
         }
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Cb_Cameras_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             (DataContext as SystemService).UpdateRoiTemplate.Execute((sender as ComboBox).SelectedIndex);
-            Vision.Vision.Instance.GrabImage((sender as ComboBox).SelectedIndex);
+            if (!bFirstLoaded)
+                SetAttachCamWindow(Cb_Cameras.SelectedIndex, true);
+
         }
         private void Storyboard2RoiCompleted(object sender, EventArgs e)
         {
             ListBoxRoiTemplate.ItemsSource = (DataContext as SystemService).RoiCollection;
         }
-        private void SetAttachCamWindow(bool bAttach = true)
+        private void SetAttachCamWindow(int nCamID, bool bAttach = true)
         {
             if (bAttach)
-                Vision.Vision.Instance.AttachCamWIndow(0, "CamDebug", CamDebug.HalconWindow);
+                Vision.Vision.Instance.AttachCamWIndow(nCamID, "CameraViewCam", CamDebug.HalconWindow);
             else
-                Vision.Vision.Instance.DetachCamWindow(0, "CamDebug");
+                Vision.Vision.Instance.DetachCamWindow(nCamID, "CameraViewCam");
         }
         private async void LoadDelay()
         {
             await Task.Run(() => {
                 if (bFirstLoaded)
                 {
-                    Task.Delay(1500).Wait();
+                    Task.Delay(3000).Wait();
                     bFirstLoaded = false;
                 }
-                SetAttachCamWindow(true);
+                Application.Current.Dispatcher.Invoke(()=>SetAttachCamWindow(Cb_Cameras.SelectedIndex,true));
             });
         }
         private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((bool)e.NewValue)
-                LoadDelay();
+            if ((bool)e.NewValue && !bFirstLoaded)
+                SetAttachCamWindow(Cb_Cameras.SelectedIndex,true);
             else
             {
-                SetAttachCamWindow(false);
+                SetAttachCamWindow(Cb_Cameras.SelectedIndex,false);
             }
         }
-        public int CurrentSelectRoiTemplate { get { return Convert.ToInt16(GetValue(CurrentSelectRoiTemplateProperty)); } set { SetValue(CurrentSelectRoiTemplateProperty, value); } }
-        public DependencyProperty CurrentSelectRoiTemplateProperty = DependencyProperty.Register("CurrentSelectRoiTemplate", typeof(int), typeof(UC_TemplateRoiSetting));
-        
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadDelay();
+        }
+  
     }
 }

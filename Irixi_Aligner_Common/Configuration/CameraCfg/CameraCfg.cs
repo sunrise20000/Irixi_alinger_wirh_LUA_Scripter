@@ -8,8 +8,9 @@ namespace Irixi_Aligner_Common.Configuration.CameraCfg
 {
     public class CameraCfg
     {
-        public bool Enable { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; }        //UserName:IP
+        public string NameForVision { get; set; }   //Vision use
         public int LightValue { get; set; }
+        public string ConnectType { get; set; }
     }
 }

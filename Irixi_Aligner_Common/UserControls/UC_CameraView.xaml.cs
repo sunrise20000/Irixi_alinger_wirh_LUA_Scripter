@@ -25,31 +25,31 @@ namespace Irixi_Aligner_Common.UserControls
     /// 
     public partial class UC_CameraView : UserControl
     {
-        private Window_TemplateRoiSetting WindowTemplateRoiSetting = new Window_TemplateRoiSetting();
         List<HTuple> HwindowList = new List<HTuple>();
         private CancellationTokenSource cts = null;
         private Task task = null;
         private AutoResetEvent grabEvent = new AutoResetEvent(false);
         private object _lock = new object();
         private bool bFirstLoaded = true;
+        private Window_TemplateRoiSetting DlgTemplateRoiSetting = new Window_TemplateRoiSetting();
         public UC_CameraView()
         {
             InitializeComponent();
             Messenger.Default.Register<string>(this, "WindowSizeChanged", str => { lock (_lock) { grabEvent.Set(); } });
-            Messenger.Default.Register<string>(this, "SetCamState", strState => {
+            Messenger.Default.Register<Tuple<string, int>>(this, "SetCamState", tuple => {
                 lock (_lock)
                 {
-                    switch (strState.ToLower())
+                    switch (tuple.Item1.ToLower())
                     {
-                        case "snapcontinues":
-                            StartContinusGrab();
+                        case "snapcontinuous":
+                            StartContinusGrab(tuple.Item2);
                             break;
                         case "stopsnap":
                             if (cts != null)
                                 cts.Cancel();
                             break;
                         case "snaponce":
-                            Vision.Vision.Instance.GrabImage(0);
+                            Vision.Vision.Instance.GrabImage(tuple.Item2);
                             break;
                         default:
                             throw new Exception("Unknow cmd for camera!");
@@ -59,23 +59,23 @@ namespace Irixi_Aligner_Common.UserControls
         }
         ~UC_CameraView()
         {
-            WindowTemplateRoiSetting.SetCloseFlag(true);
+            Messenger.Default.Unregister("WindowSizeChanged");
+            Messenger.Default.Unregister("SetCamState");
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            WindowTemplateRoiSetting.DataContext =(DataContext as ViewModelLocator).Service;
-            WindowTemplateRoiSetting.ShowDialog();
+            DlgTemplateRoiSetting.ShowDlg();
         }
-        private void StartContinusGrab()
+        private void StartContinusGrab(int nCamID)
         {
             if (task == null || task.IsCompleted || task.IsCanceled)
             {
                 cts = new CancellationTokenSource();
-                task = new Task(() => ThreadFunc(), cts.Token);
+                task = new Task(() => ThreadFunc(nCamID), cts.Token);
                 task.Start();
             }
         }
-        private void ThreadFunc()
+        private void ThreadFunc(int nCamID)
         {
             while (!cts.Token.IsCancellationRequested)
             {
@@ -84,7 +84,7 @@ namespace Irixi_Aligner_Common.UserControls
                     bool ret = grabEvent.WaitOne(50);
                     if (ret)
                         continue;
-                    Vision.Vision.Instance.GrabImage(0);
+                    Vision.Vision.Instance.GrabImage(nCamID);
                 }
             }
         }
@@ -101,17 +101,17 @@ namespace Irixi_Aligner_Common.UserControls
             if (bAttach)
             {
                 Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam1", Cam1.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam2", Cam2.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam3", Cam3.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam4", Cam4.HalconWindow);
+                Vision.Vision.Instance.AttachCamWIndow(1, "ViewCam2", Cam2.HalconWindow);
+                Vision.Vision.Instance.AttachCamWIndow(2, "ViewCam3", Cam3.HalconWindow);
+                Vision.Vision.Instance.AttachCamWIndow(3, "ViewCam4", Cam4.HalconWindow);
 
             }
             else
             {
                 Vision.Vision.Instance.DetachCamWindow(0, "ViewCam1");
-                Vision.Vision.Instance.DetachCamWindow(0, "ViewCam2");
-                Vision.Vision.Instance.DetachCamWindow(0, "ViewCam3");
-                Vision.Vision.Instance.DetachCamWindow(0, "ViewCam4");
+                Vision.Vision.Instance.DetachCamWindow(1, "ViewCam2");
+                Vision.Vision.Instance.DetachCamWindow(2, "ViewCam3");
+                Vision.Vision.Instance.DetachCamWindow(3, "ViewCam4");
 
             }
         }
@@ -120,7 +120,7 @@ namespace Irixi_Aligner_Common.UserControls
             await Task.Run(() => {
                 if (bFirstLoaded)
                 {
-                    Task.Delay(2000).Wait();
+                    Task.Delay(5000).Wait();
                     bFirstLoaded = false;
                 }
                 SetAttachWindow(true);
@@ -138,8 +138,7 @@ namespace Irixi_Aligner_Common.UserControls
         }
         public void UC_CameraView_Closing()
         {
-            WindowTemplateRoiSetting.SetCloseFlag(true);
-            WindowTemplateRoiSetting.Close();
+            DlgTemplateRoiSetting.CLoseDlg() ;
         }
     }
 }

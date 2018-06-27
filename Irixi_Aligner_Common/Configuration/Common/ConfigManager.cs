@@ -5,6 +5,7 @@ using Irixi_Aligner_Common.Configuration.ScriptCfg;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Irixi_Aligner_Common.Configuration.Common
 {
@@ -25,8 +26,7 @@ namespace Irixi_Aligner_Common.Configuration.Common
                 var json_string = File.ReadAllText(FILE_SYSTEMSETTING);
 
                 // Convert to object 
-                this.ConfSystemSetting = JsonConvert.DeserializeObject<ConfigurationSystemSetting>(json_string);
-                CameraCfgList = ConfSystemSetting.Cameras;
+                this.ConfSystemSetting = JsonConvert.DeserializeObject<ConfigurationSystemSetting>(json_string);     
             }
             catch (Exception ex)
             {
@@ -134,7 +134,7 @@ namespace Irixi_Aligner_Common.Configuration.Common
         public LayoutManager ConfWSLayout { get; set; }
         public FuncManager FuncManager { get; set; } 
 
-        public CameraCfg.CameraCfg[] CameraCfgList { get; set; }
+        
         /// <summary>
         /// Save the layout of document group
         /// </summary>

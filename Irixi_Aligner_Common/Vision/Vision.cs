@@ -20,7 +20,12 @@ namespace Irixi_Aligner_Common.Vision
         BUSY,
         DISCONNECTED
     }
-
+    public enum EnumCamType
+    {
+        GigEVision,
+        DirectShow,
+        uEye,
+    }
     public class Vision
     {
         #region constructor
@@ -33,8 +38,9 @@ namespace Irixi_Aligner_Common.Vision
                 _lockList.Add(new object());
             }
             HOperatorSet.GenEmptyObj(out Region);
+            CamCfgDic = FindCamera(EnumCamType.GigEVision);
+            
         }
-
         private static readonly Lazy<Vision> _instance = new Lazy<Vision>(() => new Vision());
         public static Vision Instance
         {
@@ -60,6 +66,7 @@ namespace Irixi_Aligner_Common.Vision
         public Enum_REGION_OPERATOR RegionOperator = Enum_REGION_OPERATOR.ADD;
         public Enum_REGION_TYPE RegionType = Enum_REGION_TYPE.CIRCLE;
         private HObject ImageTemp = null;
+        private Dictionary<string, Tuple<string, string>> CamCfgDic = new Dictionary<string, Tuple<string, string>>();
         #endregion
 
         #region public method 
@@ -162,8 +169,8 @@ namespace Irixi_Aligner_Common.Vision
                 {
                     if (!IsCamOpen(nCamID))
                     {
-                        HOperatorSet.OpenFramegrabber("DirectShow", 1, 1, 0, 0, 0, 0, "default", 8, "rgb",
-                                                    -1, "false", "default", "Integrated Camera", 0, -1, out hv_AcqHandle);
+                        HOperatorSet.OpenFramegrabber(CamCfgDic.ElementAt(nCamID).Value.Item2, 1, 1, 0, 0, 0, 0, "default", 8, "rgb",
+                                                    -1, "false", "default", CamCfgDic.ElementAt(nCamID).Value.Item1, 0, -1, out hv_AcqHandle);
                         HOperatorSet.GrabImage(out image, hv_AcqHandle);
                         HOperatorSet.GetImageSize(image, out width, out height);
                         ActiveCamDic.Add(nCamID, new Tuple<HTuple, HTuple>(width, height));
@@ -185,8 +192,7 @@ namespace Irixi_Aligner_Common.Vision
             }
             catch (Exception ex)
             {
-                Messenger.Default.Send<string>(ex.Message, "ShowError");
-                return false;
+                throw new Exception(string.Format("Open Camera error:{0}",ex.Message));
             }
             finally
             {
@@ -231,15 +237,13 @@ namespace Irixi_Aligner_Common.Vision
                 {
                     if (!HwindowDic.Keys.Contains(nCamID))
                     {
-                        Messenger.Default.Send<string>(string.Format("请先给相机{0}绑定视觉窗口", nCamID), "ShowError");
-                        return;
+                        throw new Exception(string.Format("请先给相机{0}绑定视觉窗口", nCamID));
                     }
                     if (!IsCamOpen(nCamID))
                         OpenCam(nCamID);
                     if (!IsCamOpen(nCamID))
                     {
-                        Messenger.Default.Send<string>(string.Format("打开相机{0}失败", nCamID), "ShowError");
-                        return;
+                       throw new Exception(string.Format("打开相机{0}失败", nCamID));
                     }
                     if (ImageTemp != null)
                     {
@@ -247,7 +251,8 @@ namespace Irixi_Aligner_Common.Vision
                         ImageTemp = null;
                         
                     }
-                    HOperatorSet.GrabImage(out image, AcqHandleList[nCamID]);
+                    //HOperatorSet.GrabImage(out image, AcqHandleList[nCamID]);
+                    HOperatorSet.GrabImageAsync(out image, AcqHandleList[nCamID], -1);
                     HOperatorSet.GenEmptyObj(out ImageTemp);
                     HOperatorSet.ConcatObj(ImageTemp, image, out ImageTemp);
                     foreach (var it in HwindowDic[nCamID])
@@ -267,7 +272,7 @@ namespace Irixi_Aligner_Common.Vision
             }
             catch (Exception ex)
             {
-                Messenger.Default.Send<string>(ex.Message, "ShowError");
+               throw new Exception(string.Format("GrabImage Error:{0}",ex.Message));
             }
             finally
             {
@@ -306,9 +311,7 @@ namespace Irixi_Aligner_Common.Vision
             }
             catch (Exception ex)
             {
-                result = null;
-                Messenger.Default.Send<string>(ex.Message, "Error");
-                return false;
+                throw new Exception(string.Format("Process image error:{0}",ex.Message));
             }
             finally
             {
@@ -362,9 +365,19 @@ namespace Irixi_Aligner_Common.Vision
             }
             catch (Exception ex)
             {
-                Messenger.Default.Send<String>(string.Format("DrawRectangle出错:{0}", ex.Message), "ShowError");
-                return false;
+                throw new Exception(string.Format("DrawRectangle出错:{0}", ex.Message));
             }
+        }
+        public Dictionary<string,Tuple<string,string>> FindCamera(EnumCamType camType)
+        {
+            HOperatorSet.InfoFramegrabber(camType.ToString(), "info_boards", out HTuple hv_Information, out HTuple hv_ValueList);
+            Dictionary<string, Tuple<string, string>> dic = new Dictionary<string, Tuple<string, string>>();
+            foreach (var dev in hv_ValueList.SArr)
+            {
+                string[] str = dev.Split('|');
+                dic.Add(str[1].Replace("user_name:", "").Trim() + str[2].Replace("ip_address", "").Trim(), new Tuple<string, string>(str[0].Replace("unique_name:", "").Trim(), camType.ToString()));
+            }
+            return dic;
         }
         #endregion
     }

@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Irixi_Aligner_Common.Classes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,9 +41,13 @@ namespace Irixi_Aligner_Common.Models
                     StringBuilder sb = new StringBuilder();
                     sb.Append(FileHelper.GetCurFilePathString());
                     sb.Append("VisionData\\Model\\");
+                    if (!Directory.Exists(sb.ToString()))
+                        throw new Exception(string.Format("{0} is not exist", sb.ToString()));
                     sb.Append(item.StrFullName);
                     sb.Append(".shm");
-                    if (UserControls.UC_MessageBox.Instance.ShowBox(string.Format("确定要删除{0}吗?", item.StrName)) == System.Windows.MessageBoxResult.Yes)
+                    if (!Directory.Exists(sb.ToString()))
+                        throw new Exception(string.Format("{0} is not exist", sb.ToString()));
+                    if (UserControls.UC_MessageBox.ShowBox(string.Format("确定要删除{0}吗?", item.StrName)) == System.Windows.MessageBoxResult.Yes)
                     {
                         FileHelper.DeleteFile(sb.ToString());
                         Messenger.Default.Send<string>(item.StrFullName, "UpdateTemplateFiles");

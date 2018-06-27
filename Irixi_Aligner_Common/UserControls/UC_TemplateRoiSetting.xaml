@@ -8,7 +8,8 @@
              xmlns:UserCtrl="clr-namespace:Irixi_Aligner_Common.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1000"
-             IsVisibleChanged="UserControl_IsVisibleChanged">
+             IsVisibleChanged="UserControl_IsVisibleChanged"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <Storyboard x:Key="TemplateSb" Completed="Storyboard2TemplateCompleted">
             <DoubleAnimation Storyboard.TargetName="SelectTrans"  Storyboard.TargetProperty="X" From="88" To="0" BeginTime="00:00:00" Duration="00:00:0.2"/>
@@ -44,7 +45,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Background="LightGreen" Style="{StaticResource RoundButtonStyle1}" Height="50" ToolTip="单帧采集" Margin="5" 
-                    Command="{Binding SetSnapStateCommand}" CommandParameter="SnapOnce" IsEnabled="{Binding CamSnapState,ConverterParameter=SnapOnce,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
+                    Command="{Binding SnapOnceCommand}" CommandParameter="{Binding SelectedIndex,ElementName=Cb_Cameras}" IsEnabled="{Binding CamSnapState,ConverterParameter=SnapOnce,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -57,7 +58,7 @@
                 </Button.Content>
             </Button>
             <Button Grid.Column="1" Background="LightGreen" Style="{StaticResource RoundButtonStyle1}" Height="50" ToolTip="连续采集" Margin="5" 
-                    Command="{Binding SetSnapStateCommand}" CommandParameter="SnapContinues" IsEnabled="{Binding CamSnapState,ConverterParameter=SnapOnce,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
+                    Command="{Binding SnapContinuousCommand}" CommandParameter="{Binding SelectedIndex,ElementName=Cb_Cameras}" IsEnabled="{Binding CamSnapState,ConverterParameter=SnapOnce,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -69,7 +70,7 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <Button Grid.Row="1" Style="{StaticResource RoundButtonStyle1}"  Background="LightGreen" ToolTip="停止采集" Margin="5" Height="50" Command="{Binding SetSnapStateCommand}" CommandParameter="StopSnap"
+            <Button Grid.Row="1" Style="{StaticResource RoundButtonStyle1}"  Background="LightGreen" ToolTip="停止采集" Margin="5" Height="50" Command="{Binding StopSnapCommand}" CommandParameter="{Binding SelectedIndex,ElementName=Cb_Cameras}"
                     IsEnabled="{Binding CamSnapState,ConverterParameter=StopSnap,Converter={StaticResource EnumCamSnapState2SnapButtonEnable}}">
                 <Button.Content>
                     <Grid>
@@ -82,7 +83,7 @@
                     </Grid>
                 </Button.Content>
             </Button>
-            <ComboBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,12,5,12" ItemsSource="{Binding CameraCollection}" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBox Name="Cb_Cameras" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"  ItemsSource="{Binding CameraCollection}" SelectedIndex="0" SelectionChanged="Cb_Cameras_SelectionChanged" Margin="5,12,5,12">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -96,7 +97,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-
+          
             <Rectangle Grid.Row="3" RadiusX="20" RadiusY="20" Margin="0,13,0,13"  StrokeThickness="1"  Stroke="Orange"/>
             <TextBlock Grid.Row="3" VerticalAlignment="Center" Text="ROI" FontSize="25" Margin="15,0,0,0"/>
             <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Text="模板" FontSize="25" Margin="105,0,0,0"/>

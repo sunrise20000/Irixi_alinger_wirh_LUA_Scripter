@@ -35,8 +35,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Width="100" Height="40" Margin="3" Content="Yes" FontSize="20" Click="Button_Click" Background="{x:Null}"/>
-                <Button Grid.Column="2"  Width="100" Height="40" Margin="3" Content="No" FontSize="20" Click="Button_Click_1"/>
+                <Button Name="ButtonYes" Grid.Column="1" Width="100" Height="40" Margin="3" Content="Yes" FontSize="20" Click="ButtonYes_Click" Background="{x:Null}"/>
+                <Button Name="ButtionNo" Grid.Column="2"  Width="100" Height="40" Margin="3" Content="No" FontSize="20" Click="ButtonNo_Click"/>
             </Grid>
         </Grid>
     </Grid>

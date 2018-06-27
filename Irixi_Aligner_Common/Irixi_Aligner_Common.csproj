@@ -603,6 +603,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\Icons\reload_48x48.png" />
     <Resource Include="Resources\Images\Icons\Connected.png" />
     <Resource Include="Resources\Images\Icons\Delete.png" />
     <Resource Include="Resources\Images\Icons\Disconnected.png" />

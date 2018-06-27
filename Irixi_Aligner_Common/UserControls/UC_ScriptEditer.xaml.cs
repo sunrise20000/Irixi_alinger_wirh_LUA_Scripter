@@ -710,7 +710,7 @@ namespace Irixi_Aligner_Common.UserControls
         {
             if (bNeedSaved)
             { 
-                MessageBoxResult result = UC_MessageBox.Instance.ShowBox("The file is modified, do you want to save it before close the file?");//System.Windows.MessageBox.Show("The file is modified, do you want to save it before close the file?", "GPAS",MessageBoxButton.YesNo);
+                MessageBoxResult result = UC_MessageBox.ShowBox("The file is modified, do you want to save it before close the file?");//System.Windows.MessageBox.Show("The file is modified, do you want to save it before close the file?", "GPAS",MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     if (OnClickSaveFile())
@@ -763,7 +763,7 @@ namespace Irixi_Aligner_Common.UserControls
                 {
                     byte[] buffer = Encoding.Default.GetBytes(TextArea.Text);
                     fsWrite.Write(buffer, 0, buffer.Length);
-                    UC_MessageBox.Instance.ShowBox(string.Format("Save file {0} success", StrFilePath));
+                    UC_MessageBox.ShowBox(string.Format("Save file {0} success", StrFilePath));
                     bNeedSaved = false;
                 }
             }
@@ -794,7 +794,7 @@ namespace Irixi_Aligner_Common.UserControls
             {
                 byte[] buffer = Encoding.Default.GetBytes(TextArea.Text);
                 fsWrite.Write(buffer, 0, buffer.Length);
-                UC_MessageBox.Instance.ShowBox(string.Format("Save file {0} success", StrFilePath));
+                UC_MessageBox.ShowBox(string.Format("Save file {0} success", StrFilePath));
                 bNeedSaved = false;
                 return true;
             }

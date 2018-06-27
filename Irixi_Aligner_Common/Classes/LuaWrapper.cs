@@ -25,7 +25,7 @@ namespace Irixi_Aligner_Common.Classes
             }
             catch(Exception ex)
             {
-                MessageBox.Show("Lua解释器创建失败: "+ex.Message);
+                throw new Exception(string.Format("Lua解释器创建失败: {0}",ex.Message));
             }
         }
         ~LuaWrapper()
@@ -47,10 +47,7 @@ namespace Irixi_Aligner_Common.Classes
                 string strLuaFunc = func.Name.Replace("LuaF_", "");
                 RegisterLuaFunc(lua, strLuaFunc, Scriptmgr, func.Name); 
             }
-            //Register Enum
-            //System.Reflection.PropertyInfo[] pis = type.GetProperties();
-            //foreach (PropertyInfo pi in pis)
-            //    lua[pi.Name.Replace("LuaE_", "")] = new object();    
+
         }
         public void DoString(string str)
         {
