@@ -108,7 +108,6 @@ namespace Irixi_Aligner_Common.Classes
 
             // force to enable the log, otherwise the initial message could not be recored
             LogHelper.LogEnabled = true;
-
             StringBuilder sb = new StringBuilder();
             sb.Append("\r\n");
             sb.Append("> =================================================================\r\n");
@@ -580,12 +579,20 @@ namespace Irixi_Aligner_Common.Classes
         }
         private void InitCamList()
         {
-            CameraCollection.Clear();
-            int i = 0;
-            foreach (var it in Vision.Vision.Instance.FindCamera(EnumCamType.GigEVision))
+            try
             {
-                bool bOpen = Vision.Vision.Instance.OpenCam(i++);
-                CameraCollection.Add(new CameraItem() { CameraName = it.Key, StrCameraState = bOpen? "Connected" : "DisConnected" });
+                CameraCollection.Clear();
+                int i = 0;
+                foreach (var it in Vision.Vision.Instance.FindCamera(EnumCamType.GigEVision))
+                {
+                    bool bOpen = Vision.Vision.Instance.OpenCam(i++);
+                    CameraCollection.Add(new CameraItem() { CameraName = it.Key, StrCameraState = bOpen ? "Connected" : "DisConnected" });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LastMessage = new MessageItem(MessageType.Error,
+                $"Camera init failed:{ex.Message}");
             }
         }
 

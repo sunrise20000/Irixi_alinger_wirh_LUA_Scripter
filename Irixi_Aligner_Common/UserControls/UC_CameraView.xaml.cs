@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using HalconDotNet;
+using Irixi_Aligner_Common.Classes;
 using Irixi_Aligner_Common.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -98,21 +99,28 @@ namespace Irixi_Aligner_Common.UserControls
         }
         private void SetAttachWindow(bool bAttach)
         {
-            if (bAttach)
+            try
             {
-                Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam1", Cam1.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(1, "ViewCam2", Cam2.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(2, "ViewCam3", Cam3.HalconWindow);
-                Vision.Vision.Instance.AttachCamWIndow(3, "ViewCam4", Cam4.HalconWindow);
+                if (bAttach)
+                {
+                    Vision.Vision.Instance.AttachCamWIndow(0, "ViewCam1", Cam1.HalconWindow);
+                    Vision.Vision.Instance.AttachCamWIndow(1, "ViewCam2", Cam2.HalconWindow);
+                    Vision.Vision.Instance.AttachCamWIndow(2, "ViewCam3", Cam3.HalconWindow);
+                    Vision.Vision.Instance.AttachCamWIndow(3, "ViewCam4", Cam4.HalconWindow);
 
+                }
+                else
+                {
+                    Vision.Vision.Instance.DetachCamWindow(0, "ViewCam1");
+                    Vision.Vision.Instance.DetachCamWindow(1, "ViewCam2");
+                    Vision.Vision.Instance.DetachCamWindow(2, "ViewCam3");
+                    Vision.Vision.Instance.DetachCamWindow(3, "ViewCam4");
+
+                }
             }
-            else
+            catch(Exception ex)
             {
-                Vision.Vision.Instance.DetachCamWindow(0, "ViewCam1");
-                Vision.Vision.Instance.DetachCamWindow(1, "ViewCam2");
-                Vision.Vision.Instance.DetachCamWindow(2, "ViewCam3");
-                Vision.Vision.Instance.DetachCamWindow(3, "ViewCam4");
-
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private async void LoadDelay()

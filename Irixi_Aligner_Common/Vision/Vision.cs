@@ -39,7 +39,6 @@ namespace Irixi_Aligner_Common.Vision
             }
             HOperatorSet.GenEmptyObj(out Region);
             CamCfgDic = FindCamera(EnumCamType.GigEVision);
-            
         }
         private static readonly Lazy<Vision> _instance = new Lazy<Vision>(() => new Vision());
         public static Vision Instance
@@ -72,6 +71,8 @@ namespace Irixi_Aligner_Common.Vision
         #region public method 
         public bool AttachCamWIndow(int nCamID, string Name, HTuple hWindow)
         {
+            if (nCamID < 0)
+                return false;
             lock (_lockList[nCamID])
             {
                 //关联当前窗口
@@ -108,6 +109,8 @@ namespace Irixi_Aligner_Common.Vision
         }
         public bool AttachCamWIndow(int nCamID, string Name, System.Windows.Controls.Image imageWindow) //同一个窗口最多只能与一个相机绑定
         {
+            if (nCamID < 0)
+                return false;
             lock (_lockList[nCamID])
             {
                 //关联当前窗口
@@ -142,6 +145,8 @@ namespace Irixi_Aligner_Common.Vision
         }
         public bool DetachCamWindow(int nCamID, string Name)
         {
+            if (nCamID < 0)
+                return false;
             lock (_lockList[nCamID])
             {
                 if (HwindowDic.Keys.Contains(nCamID))
@@ -160,6 +165,8 @@ namespace Irixi_Aligner_Common.Vision
    
         public bool OpenCam(int nCamID)
         {
+            if (nCamID < 0)
+                return false;
             HObject image = null;
             HTuple hv_AcqHandle = null;
             HTuple width = 0, height = 0;
@@ -202,6 +209,8 @@ namespace Irixi_Aligner_Common.Vision
         }
         public bool CloseCam(int nCamID)
         {
+            if (nCamID < 0)
+                return false;
             try
             {
                 lock (_lockList[nCamID])
@@ -222,6 +231,8 @@ namespace Irixi_Aligner_Common.Vision
         }
         public bool IsCamOpen(int nCamID)
         {
+            if (nCamID < 0)
+                return false;
             lock (_lockList[nCamID])
             {
                 return ActiveCamDic.Keys.Contains(nCamID);
@@ -229,6 +240,8 @@ namespace Irixi_Aligner_Common.Vision
         }
         public void GrabImage(int nCamID, bool bDispose = true)
         {
+            if (nCamID < 0)
+                return;
             HObject image = null;
             Bitmap bitmap = null;
             try
@@ -290,6 +303,9 @@ namespace Irixi_Aligner_Common.Vision
         }
         public bool ProcessImage(IMAGEPROCESS_STEP nStep, int nCamID, object para, out object result)
         {
+            result = null;
+            if (nCamID < 0)
+                return false;
             HObject image = null;
             try
             {
@@ -320,6 +336,8 @@ namespace Irixi_Aligner_Common.Vision
         }
         public bool DrawRoi(int nCamID)
         {
+            if (nCamID < 0)
+                return false;
             try
             {
                 lock (_lockList[nCamID])
@@ -370,14 +388,23 @@ namespace Irixi_Aligner_Common.Vision
         }
         public Dictionary<string,Tuple<string,string>> FindCamera(EnumCamType camType)
         {
-            HOperatorSet.InfoFramegrabber(camType.ToString(), "info_boards", out HTuple hv_Information, out HTuple hv_ValueList);
-            Dictionary<string, Tuple<string, string>> dic = new Dictionary<string, Tuple<string, string>>();
-            foreach (var dev in hv_ValueList.SArr)
+            try
             {
-                string[] str = dev.Split('|');
-                dic.Add(str[1].Replace("user_name:", "").Trim() + str[2].Replace("ip_address", "").Trim(), new Tuple<string, string>(str[0].Replace("unique_name:", "").Trim(), camType.ToString()));
+                HOperatorSet.InfoFramegrabber(camType.ToString(), "info_boards", out HTuple hv_Information, out HTuple hv_ValueList);
+                Dictionary<string, Tuple<string, string>> dic = new Dictionary<string, Tuple<string, string>>();
+                if (0 == hv_ValueList.Length)
+                    return dic;
+                foreach (var dev in hv_ValueList.SArr)
+                {
+                    string[] str = dev.Split('|');
+                    dic.Add(str[1].Replace("user_name:", "").Trim() + str[2].Replace("ip_address", "").Trim(), new Tuple<string, string>(str[0].Replace("unique_name:", "").Trim(), camType.ToString()));
+                }
+                return dic;
             }
-            return dic;
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("FIndCamera error:{0}",ex.Message));
+            }
         }
         #endregion
     }
